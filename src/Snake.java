@@ -1,16 +1,14 @@
-import java.awt.*;
+import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.paint.Color;
 import java.util.ArrayList;
-import java.util.LinkedList;
 
 public class Snake {
-    private ArrayList<Tail> tails;
-    private int speed;
-    private Tail head;
+    private final ArrayList<Tail> tails;
+    private final Tail head;
 
-    public Snake(int speed, Tail head) {
-        tails = new ArrayList<Tail>();
+    public Snake(Tail head) {
+        tails = new ArrayList<>();
         tails.add(head);
-        this.speed = speed;
         this.head = head;
     }
 
@@ -18,23 +16,16 @@ public class Snake {
         tails.add(t);
     }
 
-    public void drawSnake() {
-        for (Tail tail : tails) {
-            Rectangle currentTail = new Rectangle(tail.getPosX(), tail.getPosY(), tail.getSizeX(), tail.getSizeY());
-
+    public void drawSnake(GraphicsContext gc) {
+        for (int i = 0; i < tails.size(); i++) {
+            // r: 150, g: 0, b: (255, 130); 255-130=125
+            gc.setFill(Color.rgb(150, 0, (130 + 124*i/tails.size())));
+            gc.fillRect(tails.get(i).getPosX(), tails.get(i).getPosY(), tails.get(i).getSizeX(), tails.get(i).getSizeY());
         }
-    }
-
-    public void setSpeed(int speed) {
-        this.speed = speed;
     }
 
     public ArrayList<Tail> getTails() {
         return tails;
-    }
-
-    public int getSpeed() {
-        return speed;
     }
 
     public Tail getHead() {
