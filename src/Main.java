@@ -1,43 +1,31 @@
 import javafx.application.Application;
-import javafx.event.ActionEvent;
-import javafx.event.Event;
-import javafx.event.EventHandler;
 import javafx.scene.Scene;
-import javafx.scene.layout.StackPane;
+import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
-import javafx.scene.control.Button;
 
-public class Main extends Application implements EventHandler<ActionEvent> {
-
-    Button button;
+public class Main extends Application {
 
     public static void main(String[] args) {
         launch(args);
     }
 
     @Override
-    public void start(Stage primaryStage) throws Exception {
-        primaryStage.setTitle("Snake");
-        primaryStage.setResizable(true);
+    public void start(Stage primaryStage) {
+        try{
+            primaryStage.setTitle("Snake");
+            primaryStage.setResizable(true);
 
-        button = new Button();
-        button.setText("Click me!");
+            BorderPane root = new BorderPane();
+            Scene scene = new Scene(root, 400, 400);
+            scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 
-        button.setOnAction(this);
+            primaryStage.setScene(scene);
+            primaryStage.show();
 
-        StackPane layout = new StackPane();
-        layout.getChildren().add(button);
+        }
+        catch(Exception ex) {
+            ex.printStackTrace();
+        }
 
-        Scene scene = new Scene(layout, 300, 250);
-        primaryStage.setScene(scene);
-
-        primaryStage.show();
-    }
-
-
-    @Override
-    public void handle(ActionEvent actionEvent) {
-        if (actionEvent.getSource() == button)
-            System.out.println("Yeah you touched the button!");
     }
 }
