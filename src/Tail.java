@@ -1,10 +1,10 @@
 public class Tail {
-    private int posX = 0;
-    private int posY = 0;
-    private int sizeX = 20;
-    private int sizeY = 20;
+    private int posX;
+    private int posY;
+    private int sizeX;
+    private int sizeY;
 
-    public Tail(int posX, int posY, int sizeX, int sizeY, int speed) {
+    public Tail(int posX, int posY, int sizeX, int sizeY) {
         this.posX = posX;
         this.posY = posY;
         this.sizeX = sizeX;

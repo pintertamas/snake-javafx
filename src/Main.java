@@ -13,11 +13,14 @@ public class Main extends Application {
     public void start(Stage primaryStage) {
         try{
             primaryStage.setTitle("Snake");
-            primaryStage.setResizable(true);
+            primaryStage.setResizable(false);
 
             BorderPane root = new BorderPane();
             Scene scene = new Scene(root, 400, 400);
-            scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
+            scene.getStylesheets().add(getClass().getResource("game.css").toExternalForm());
+
+            Tail tail = new Tail(10,10,20,20);
+            Snake snek = new Snake(5, tail);
 
             primaryStage.setScene(scene);
             primaryStage.show();
