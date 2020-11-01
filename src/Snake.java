@@ -42,47 +42,56 @@ public class Snake {
         }
     }
 
-    public void moveSnake() {
+    public void changeDirection() {
         scene.setOnKeyPressed(new EventHandler<KeyEvent>() {
             @Override
             public void handle(KeyEvent keyEvent) {
                 KeyCode code = keyEvent.getCode();
-                for (int i = tails.size() - 1; i >= 1; i--) {
-                    tails.get(i).setPosX(tails.get(i - 1).getPosX());
-                    tails.get(i).setPosY(tails.get(i - 1).getPosY());
-                }
                 if (code == KeyCode.RIGHT || code == KeyCode.D) {
-                    if (direction != dir.LEFT) {
+                    if (direction != dir.LEFT)
                         direction = dir.RIGHT;
-                        if (tails.get(0).getPosX() + 40 <= windowSize - 40)
-                            tails.get(0).setPosX(tails.get(0).getPosX() + 40);
-                    }
                 }
                 else if (code == KeyCode.LEFT || code == KeyCode.A) {
-                    if (direction != dir.RIGHT) {
+                    if (direction != dir.RIGHT)
                         direction = dir.LEFT;
-                        if (tails.get(0).getPosX() - 40 >= 0)
-                            tails.get(0).setPosX(tails.get(0).getPosX() - 40);
-                    }
                 }
                 else if (code == KeyCode.UP || code == KeyCode.W) {
-                    if (direction != dir.DOWN) {
+                    if (direction != dir.DOWN)
                         direction = dir.UP;
-                        if (tails.get(0).getPosY() - 40 >= 0)
-                            tails.get(0).setPosY(tails.get(0).getPosY() - 40);
-                    }
                 }
                 else if (code == KeyCode.DOWN || code == KeyCode.S) {
-                    if (direction != dir.UP) {
+                    if (direction != dir.UP)
                         direction = dir.DOWN;
-                        if (tails.get(0).getPosY() + 40 <= windowSize - 40)
-                            tails.get(0).setPosY(tails.get(0).getPosY() + 40);
-                    }
                 }
-                System.out.println(direction);
-                drawSnake(gc);
             }
         });
+    }
+
+    public void moveSnake() {
+        for (int i = tails.size() - 1; i >= 1; i--) {
+            tails.get(i).setPosX(tails.get(i - 1).getPosX());
+            tails.get(i).setPosY(tails.get(i - 1).getPosY());
+        }
+        switch (direction) {
+            case RIGHT:
+                if (tails.get(0).getPosX() + 40 <= windowSize - 40)
+                    tails.get(0).setPosX(tails.get(0).getPosX() + 40);
+                break;
+            case LEFT:
+                if (tails.get(0).getPosX() - 40 >= 0)
+                    tails.get(0).setPosX(tails.get(0).getPosX() - 40);
+                break;
+            case UP:
+                if (tails.get(0).getPosY() - 40 >= 0)
+                    tails.get(0).setPosY(tails.get(0).getPosY() - 40);
+                break;
+            case DOWN:
+                if (tails.get(0).getPosY() + 40 <= windowSize - 40)
+                    tails.get(0).setPosY(tails.get(0).getPosY() + 40);
+                break;
+        }
+        drawSnake(gc);
+
     }
 
     public ArrayList<Tail> getTails() {

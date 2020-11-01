@@ -2,45 +2,43 @@ import javafx.scene.Scene;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
+import java.util.ArrayList;
 import java.util.Random;
 
 public class Map {
     private static int windowSize;
-    private int cellCount = 20;
-    private final Snake snake;
-    private Food food;
-    private Scene scene;
+    private final int cellCount = 20;
+    private Snake snake;
+    private ArrayList<Food> foods;
 
     public Map(int windowSize, Scene scene, GraphicsContext gc) {
         Map.windowSize = windowSize;
         this.snake = new Snake(new Tail(360, 400, 40, 40), windowSize, scene, gc);
-        food = new Food();
+        this.foods = new ArrayList<>();
     }
 
-    /*public void setupMap() {
-        Tail tail2 = new Tail(400, 400, 40, 40);
-        Tail tail3 = new Tail(440, 400, 40, 40);
-        Tail tail4 = new Tail(480, 400, 40, 40);
-        Tail tail5 = new Tail(520, 400, 40, 40);
-        Tail tail6 = new Tail(560, 400, 40, 40);
-        Tail tail7 = new Tail(600, 400, 40, 40);
-        Tail tail8 = new Tail(640, 400, 40, 40);
-        Tail tail9 = new Tail(680, 400, 40, 40);
-        snake.addTail(tail2);
-        snake.addTail(tail3);
-        snake.addTail(tail4);
-        snake.addTail(tail5);
-        snake.addTail(tail6);
-        snake.addTail(tail7);
-        snake.addTail(tail8);
-        snake.addTail(tail9);
-    }*/
+    public void initFood(Main.dif difficulty) {
+        foods.clear();
+        foods = new ArrayList<>();
+        for (int i = 0; i < getFoodCount(difficulty); i++)
+            foods.add(new Food(-40, -40, 0, 0, 0));
+    }
 
-    public void updateMap(GraphicsContext gc) {
+    public void updateMap(Main.dif difficulty, GraphicsContext gc) {
         drawBackground(gc);
-        snake.drawSnake(gc);
-        generateFood(gc);
+        generateFood(difficulty, gc);
+        snake.changeDirection();
         snake.moveSnake();
+        snake.drawSnake(gc);
+        checkCollision(difficulty, gc);
+    }
+
+    public void checkCollision(Main.dif difficulty, GraphicsContext gc) {
+        for (Food food : foods)
+            if (snake.head().getPosX() == food.getPosX() && snake.head().getPosY() == food.getPosY()) { // collision detected
+                food.setPosX(-1);
+                snake.addTail(new Tail(0, 0, 40, 40));
+            }
     }
 
     private void drawBackground(GraphicsContext gc) {
@@ -57,26 +55,58 @@ public class Map {
         }
     }
 
-    public void generateFood(GraphicsContext gc) {
-        Random r = new Random();
-        int low = 0;
-        int high = cellCount;
-        int posX;
-        int posY;
-        while (true) {
-            boolean correctFoodPosition = true;
-            posX = (windowSize / cellCount) * r.nextInt(high - low) + low;
-            posY = (windowSize / cellCount) * r.nextInt(high - low) + low;
-            for (Tail tail : snake.getTails()) {
-                if (tail.getPosX() == posX && tail.getPosY() == posY) {
-                    correctFoodPosition = false;
-                    break;
+    public void generateFood(Main.dif difficulty, GraphicsContext gc) {
+        if (foods.size() != getFoodCount(difficulty))
+            initFood(difficulty);
+        for (Food food : foods) {
+            if (food.getPosX() <= 0) {
+                Random rand = new Random();
+                int low = 0;
+                int high = cellCount;
+                int posX;
+                int posY;
+                int r = rand.nextInt(255);
+                int g = rand.nextInt(100);
+                int b = rand.nextInt(255);
+                while (true) {
+                    boolean correctFoodPosition = true;
+                    posX = (windowSize / cellCount) * rand.nextInt(high - low) + low;
+                    posY = (windowSize / cellCount) * rand.nextInt(high - low) + low;
+                    for (Tail tail : snake.getTails()) {
+                        if (tail.getPosX() == posX && tail.getPosY() == posY) {
+                            correctFoodPosition = false;
+                            break;
+                        }
+                    }
+                    if (correctFoodPosition) {
+                        food.setPosX(posX);
+                        food.setPosY(posY);
+                        food.setColor(r, g, b);
+                        break;
+                    }
                 }
+
             }
-            if (correctFoodPosition)
-                break;
         }
-        food.spawnFood(posX, posY, gc);
+        for (Food food : foods)
+            food.drawFood(food, gc);
     }
 
+    public void addFood(Food food) {
+        foods.add(food);
+    }
+
+    public void setSnake(Snake snake) {
+        this.snake = snake;
+    }
+
+    public int getFoodCount(Main.dif difficulty) {
+        if (difficulty == Main.dif.EASY)
+            return 1;
+        else if (difficulty == Main.dif.MEDIUM)
+            return 2;
+        else if (difficulty == Main.dif.HARD)
+            return 3;
+        else return 0;
+    }
 }

@@ -1,22 +1,11 @@
-public class Tail {
-    private int posX;
-    private int posY;
+public class Tail extends Point{
     private int sizeX;
     private int sizeY;
 
     public Tail(int posX, int posY, int sizeX, int sizeY) {
-        this.posX = posX;
-        this.posY = posY;
+        super(posX, posY);
         this.sizeX = sizeX;
         this.sizeY = sizeY;
-    }
-
-    public int getPosX() {
-        return posX;
-    }
-
-    public int getPosY() {
-        return posY;
     }
 
     public int getSizeX() {
@@ -27,13 +16,7 @@ public class Tail {
         return sizeY;
     }
 
-    public void setPosX(int posX) {
-        this.posX = posX;
-    }
 
-    public void setPosY(int posY) {
-        this.posY = posY;
-    }
 
     public void setSizeX(int sizeX) {
         this.sizeX = sizeX;
