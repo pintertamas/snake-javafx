@@ -1,15 +1,31 @@
+import javafx.event.EventHandler;
+import javafx.scene.Scene;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
+
 import java.util.ArrayList;
 
 public class Snake {
     private final ArrayList<Tail> tails;
     private final Tail head;
+    private final int windowSize;
+    private final Scene scene;
 
-    public Snake(Tail head) {
+    private enum dir {
+        UP, DOWN, LEFT, RIGHT
+    }
+
+    private dir direction;
+
+    public Snake(Tail head, int windowSize, Scene scene) {
         tails = new ArrayList<>();
         tails.add(head);
         this.head = head;
+        direction = dir.RIGHT;
+        this.windowSize = windowSize;
+        this.scene = scene;
     }
 
     public void addTail(Tail t) {
@@ -19,8 +35,62 @@ public class Snake {
     public void drawSnake(GraphicsContext gc) {
         for (int i = 0; i < tails.size(); i++) {
             // r: 150, g: 0, b: (255, 130); 255-130=125
-            gc.setFill(Color.rgb(150, 0, (130 + 124*i/tails.size())));
+            gc.setFill(Color.rgb(150, 0, (130 + 125 * i / tails.size())));
             gc.fillRect(tails.get(i).getPosX(), tails.get(i).getPosY(), tails.get(i).getSizeX(), tails.get(i).getSizeY());
+        }
+    }
+
+    public void moveSnake() {
+        scene.setOnKeyPressed(new EventHandler<KeyEvent>() {
+            @Override
+            public void handle(KeyEvent keyEvent) {
+                KeyCode code = keyEvent.getCode();
+                if (code == KeyCode.RIGHT || code == KeyCode.D) {
+                    if (direction != dir.LEFT)
+                        direction = dir.RIGHT;
+                }
+                else if (code == KeyCode.LEFT || code == KeyCode.A) {
+                    if (direction != dir.RIGHT)
+                        direction = dir.LEFT;
+                }
+                else if (code == KeyCode.UP || code == KeyCode.W) {
+                    if (direction != dir.DOWN)
+                        direction = dir.UP;
+                }
+                else if (code == KeyCode.DOWN || code == KeyCode.S) {
+                    if (direction != dir.UP)
+                        direction = dir.DOWN;
+                }
+                //System.out.println(direction);
+            }
+        });
+        for (int i = tails.size() - 1; i >= 1; i--) {
+            tails.get(i).setPosX(tails.get(i - 1).getPosX());
+            tails.get(i).setPosY(tails.get(i - 1).getPosY());
+        }
+        switch (direction) {
+            case UP:
+                if (tails.get(0).getPosY() - 40 >= 0)
+                    tails.get(0).setPosY(tails.get(0).getPosY() - 40);
+                System.out.println(direction);
+                break;
+            case DOWN:
+                if (tails.get(0).getPosY() + 40 <= windowSize)
+                    tails.get(0).setPosY(tails.get(0).getPosY() + 40);
+                System.out.println(direction);
+                break;
+            case LEFT:
+                if (tails.get(0).getPosX() - 40 <= 0)
+                    tails.get(0).setPosX(tails.get(0).getPosX() - 40);
+                System.out.println(direction);
+                break;
+            case RIGHT:
+                if (tails.get(0).getPosX() + 40 <= windowSize)
+                    tails.get(0).setPosX(tails.get(0).getPosX() + 40);
+                System.out.println(direction);
+                break;
+            default:
+                break;
         }
     }
 
@@ -28,8 +98,12 @@ public class Snake {
         return tails;
     }
 
-    public Tail getHead() {
+    public Tail head() {
         return head;
+    }
+
+    public void setDirection(dir direction) {
+        this.direction = direction;
     }
 
 }
