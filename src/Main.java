@@ -41,8 +41,8 @@ public class Main extends Application {
     }
 
     private void run(Scene scene) {
-        Map map = new Map(gameWindowSize, scene);
-        map.setupMap(); // ki kell majd torolni, most csak egy ideiglenes kigyot rajzol fel.
+        Map map = new Map(gameWindowSize, scene, gc);
+        //map.setupMap(); // ki kell majd torolni, most csak egy ideiglenes kigyot rajzol fel.
         map.updateMap(gc);
     }
 }

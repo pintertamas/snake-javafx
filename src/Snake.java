@@ -12,6 +12,7 @@ public class Snake {
     private final Tail head;
     private final int windowSize;
     private final Scene scene;
+    private GraphicsContext gc;
 
     private enum dir {
         UP, DOWN, LEFT, RIGHT
@@ -19,13 +20,14 @@ public class Snake {
 
     private dir direction;
 
-    public Snake(Tail head, int windowSize, Scene scene) {
+    public Snake(Tail head, int windowSize, Scene scene, GraphicsContext gc) {
         tails = new ArrayList<>();
         tails.add(head);
         this.head = head;
-        direction = dir.RIGHT;
+        this.direction = dir.RIGHT;
         this.windowSize = windowSize;
         this.scene = scene;
+        this.gc = gc;
     }
 
     public void addTail(Tail t) {
@@ -45,53 +47,42 @@ public class Snake {
             @Override
             public void handle(KeyEvent keyEvent) {
                 KeyCode code = keyEvent.getCode();
+                for (int i = tails.size() - 1; i >= 1; i--) {
+                    tails.get(i).setPosX(tails.get(i - 1).getPosX());
+                    tails.get(i).setPosY(tails.get(i - 1).getPosY());
+                }
                 if (code == KeyCode.RIGHT || code == KeyCode.D) {
-                    if (direction != dir.LEFT)
+                    if (direction != dir.LEFT) {
                         direction = dir.RIGHT;
+                        if (tails.get(0).getPosX() + 40 <= windowSize - 40)
+                            tails.get(0).setPosX(tails.get(0).getPosX() + 40);
+                    }
                 }
                 else if (code == KeyCode.LEFT || code == KeyCode.A) {
-                    if (direction != dir.RIGHT)
+                    if (direction != dir.RIGHT) {
                         direction = dir.LEFT;
+                        if (tails.get(0).getPosX() - 40 >= 0)
+                            tails.get(0).setPosX(tails.get(0).getPosX() - 40);
+                    }
                 }
                 else if (code == KeyCode.UP || code == KeyCode.W) {
-                    if (direction != dir.DOWN)
+                    if (direction != dir.DOWN) {
                         direction = dir.UP;
+                        if (tails.get(0).getPosY() - 40 >= 0)
+                            tails.get(0).setPosY(tails.get(0).getPosY() - 40);
+                    }
                 }
                 else if (code == KeyCode.DOWN || code == KeyCode.S) {
-                    if (direction != dir.UP)
+                    if (direction != dir.UP) {
                         direction = dir.DOWN;
+                        if (tails.get(0).getPosY() + 40 <= windowSize - 40)
+                            tails.get(0).setPosY(tails.get(0).getPosY() + 40);
+                    }
                 }
-                //System.out.println(direction);
+                System.out.println(direction);
+                drawSnake(gc);
             }
         });
-        for (int i = tails.size() - 1; i >= 1; i--) {
-            tails.get(i).setPosX(tails.get(i - 1).getPosX());
-            tails.get(i).setPosY(tails.get(i - 1).getPosY());
-        }
-        switch (direction) {
-            case UP:
-                if (tails.get(0).getPosY() - 40 >= 0)
-                    tails.get(0).setPosY(tails.get(0).getPosY() - 40);
-                System.out.println(direction);
-                break;
-            case DOWN:
-                if (tails.get(0).getPosY() + 40 <= windowSize)
-                    tails.get(0).setPosY(tails.get(0).getPosY() + 40);
-                System.out.println(direction);
-                break;
-            case LEFT:
-                if (tails.get(0).getPosX() - 40 <= 0)
-                    tails.get(0).setPosX(tails.get(0).getPosX() - 40);
-                System.out.println(direction);
-                break;
-            case RIGHT:
-                if (tails.get(0).getPosX() + 40 <= windowSize)
-                    tails.get(0).setPosX(tails.get(0).getPosX() + 40);
-                System.out.println(direction);
-                break;
-            default:
-                break;
-        }
     }
 
     public ArrayList<Tail> getTails() {
