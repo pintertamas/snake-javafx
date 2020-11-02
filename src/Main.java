@@ -10,6 +10,8 @@ import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.stage.Stage;
 
+import java.io.IOException;
+
 public class Main extends Application {
 
     private final int gameWindowSize = 800;
@@ -17,10 +19,11 @@ public class Main extends Application {
     private GraphicsContext gc;
 
     public enum dif {EASY, MEDIUM, HARD}
+
     private dif difficulty = dif.EASY;
 
-    private enum GameStatus {
-        GAME, NEWGAME, LEADERBOARD
+    public enum GameStatus {
+        GAME, NEWGAME, LEADERBOARD, GAMEOVER
     }
 
     private GameStatus gameStatus = GameStatus.GAME;
@@ -49,13 +52,13 @@ public class Main extends Application {
     }
 
     private void run(Scene scene) {
-        Map map = new Map(gameWindowSize, scene, gc);
-        Leaderboard leaderboard = new Leaderboard();
+        Screen map = new Screen(gameWindowSize, scene, gc);
+        Leaderboard leaderboard = new Leaderboard(gc);
         new AnimationTimer() {
             public void handle(long currTime) {
                 switch (gameStatus) {
                     case GAME -> {
-                        map.updateMap(difficulty, gc);
+                        map.updateScreen(difficulty, gameStatus, gc);
                         try {
                             Thread.sleep(75);
                         } catch (InterruptedException e) {
@@ -67,7 +70,14 @@ public class Main extends Application {
                         map.initFood(difficulty);
                         gameStatus = GameStatus.GAME;
                     }
-                    case LEADERBOARD -> leaderboard.show();
+                    case LEADERBOARD -> {
+                        try {
+                            leaderboard.show();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    case GAMEOVER -> System.out.println("gameover");
                 }
             }
         }.start();
@@ -123,4 +133,10 @@ public class Main extends Application {
         menuBar.getMenus().addAll(menu, menuDiff);
         root.getChildren().addAll(menuBar);
     }
+}
+
+interface OnGeekEventListener {
+
+    // this can be any type of method
+    void onGeekEvent();
 }

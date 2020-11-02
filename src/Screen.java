@@ -1,18 +1,20 @@
 import javafx.scene.Scene;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Text;
 
 import java.util.ArrayList;
 import java.util.Random;
 
-public class Map {
+public class Screen {
     private static int windowSize;
     private final int cellCount = 20;
     private Snake snake;
     private ArrayList<Food> foods;
+    private Leaderboard leaderboard;
 
-    public Map(int windowSize, Scene scene, GraphicsContext gc) {
-        Map.windowSize = windowSize;
+    public Screen(int windowSize, Scene scene, GraphicsContext gc) {
+        Screen.windowSize = windowSize;
         this.snake = new Snake(new Tail(360, 400, 40, 40), windowSize, scene, gc);
         this.foods = new ArrayList<>();
     }
@@ -24,21 +26,41 @@ public class Map {
             foods.add(new Food(-40, -40, 0, 0, 0));
     }
 
-    public void updateMap(Main.dif difficulty, GraphicsContext gc) {
+    public void updateScreen(Main.dif difficulty, Main.GameStatus gameStatus, GraphicsContext gc) {
         drawBackground(gc);
         generateFood(difficulty, gc);
         snake.changeDirection();
-        snake.moveSnake();
+        snake.moveSnake(gameStatus);
         snake.drawSnake(gc);
-        checkCollision(difficulty, gc);
+        drawScore(gc);
+        checkFoodCollision();
+        checkSelfCollision(gameStatus);
     }
 
-    public void checkCollision(Main.dif difficulty, GraphicsContext gc) {
+    public void checkFoodCollision() {
         for (Food food : foods)
             if (snake.head().getPosX() == food.getPosX() && snake.head().getPosY() == food.getPosY()) { // collision detected
                 food.setPosX(-1);
                 snake.addTail(new Tail(0, 0, 40, 40));
             }
+    }
+
+    public void checkWallCollision(Main.GameStatus gameStatus) {
+        if (snake.head().getPosX() < 0 ||
+                snake.head().getPosX() > windowSize ||
+                snake.head().getPosY() < 0 ||
+                snake.head().getPosY() > windowSize)
+            gameStatus = Main.GameStatus.GAMEOVER;
+    }
+
+    public void checkSelfCollision(Main.GameStatus gameStatus) {
+        for (int i = 0; i < snake.getTails().size(); i++)
+            for (int j = i; j < snake.getTails().size() - i; j++)
+                if (snake.getTails().get(i).getPosX() == snake.getTails().get(j).getPosX() &&
+                        snake.getTails().get(i).getPosY() == snake.getTails().get(j).getPosY()) {
+                    gameStatus = Main.GameStatus.GAMEOVER;
+                    break;
+                }
     }
 
     private void drawBackground(GraphicsContext gc) {
@@ -55,11 +77,19 @@ public class Map {
         }
     }
 
+    private void drawScore(GraphicsContext gc) {
+        gc.setFill(Color.rgb(0, 0, 0));
+        Text scoreText = new Text(Integer.toString(snake.getTails().size()));
+        scoreText.setX(windowSize - 20);
+        scoreText.setY(30);
+
+    }
+
     public void generateFood(Main.dif difficulty, GraphicsContext gc) {
         if (foods.size() != getFoodCount(difficulty))
             initFood(difficulty);
         for (Food food : foods) {
-            if (food.getPosX() <= 0) {
+            if (food.getPosX() < 0) {
                 Random rand = new Random();
                 int low = 0;
                 int high = cellCount;

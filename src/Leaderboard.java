@@ -1,13 +1,21 @@
-import java.io.File;
-import java.io.FileNotFoundException;
+import javafx.scene.canvas.GraphicsContext;
+
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Scanner; // Import the Scanner class to read text files
 
 public class Leaderboard {
-    private ArrayList<String> points;
+    private final ArrayList<Integer> points;
+    private GraphicsContext gc;
 
-    public Leaderboard() {
+    public Leaderboard(GraphicsContext gc) {
         points = new ArrayList<>();
+        this.gc = gc;
+    }
+
+    public void initFakeLeaderboard() {
+        for (int i = 0; i < 10; i++)
+            points.add(i);
     }
 
     public void loadLeaderboard() {
@@ -15,7 +23,7 @@ public class Leaderboard {
             File file = new File("leaderboard.txt");
             Scanner scanner = new Scanner(file);
             while (scanner.hasNextLine()) {
-                String data = scanner.nextLine();
+                int data = scanner.nextInt();
                 points.add(data);
                 System.out.println(data);
             }
@@ -26,12 +34,26 @@ public class Leaderboard {
         }
     }
 
-    public void saveLeaderboard() {
-
+    public void saveLeaderboard(ArrayList<Integer> points) {
+        try {
+            FileOutputStream fileOut =
+                    new FileOutputStream("leaderboard.ser");
+            ObjectOutputStream out = new ObjectOutputStream(fileOut);
+            for (Integer point : points)
+                out.writeObject(point);
+            out.close();
+            fileOut.close();
+            System.out.printf("Serialized data is saved in leaderboard.ser");
+        } catch (IOException i) {
+            i.printStackTrace();
+        }
     }
 
-    public void show() {
-
+    public void show() throws IOException {
+        initFakeLeaderboard();
+        saveLeaderboard(points);
     }
+
+
 }
 
