@@ -8,7 +8,6 @@ public class Leaderboard {
 
     private final ArrayList<Integer> points;
     private GraphicsContext gc;
-    private Object ScoreComparator;
 
     public Leaderboard(GraphicsContext gc) {
         points = new ArrayList<>();
@@ -54,20 +53,14 @@ public class Leaderboard {
     }
 
     public void show() {
-        //saveLeaderboard(points);
+
     }
 
     public void updateScores(ArrayList<Integer> topScores, int score) {
-        //topScores.sort(Integer::compareTo);
-        int smallest = 100000;
-        int smallestIndex = -1;
-        for (int i = 0; i < topScores.size(); i++)
-            if (smallest > topScores.get(i)) {
-                smallest = topScores.get(i);
-                smallestIndex = i;
-            }
-        //if (smallest < score && smallestIndex != -1)
-        //topScores.get(smallestIndex) = score;
+        topScores.sort(new ScoreComparator());
+        if (topScores.get(topScores.size() - 1) < score)
+            topScores.set(topScores.size() - 1, score);
+        topScores.sort(new ScoreComparator());
     }
 
     public ArrayList<Integer> getPoints() {

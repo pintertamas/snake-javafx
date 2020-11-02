@@ -1,28 +1,22 @@
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.*;
-import javafx.scene.control.Menu;
-import javafx.scene.control.MenuBar;
-import javafx.scene.control.MenuItem;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
-public class Main extends Application implements GameOverListener {
+public class Main extends Application implements GameStatusListener, DifficultyListener {
 
     private final int gameWindowSize = 800;
 
     private GraphicsContext gc;
 
-    public enum dif {EASY, MEDIUM, HARD}
+    public enum Difficulty {EASY, MEDIUM, HARD}
 
-    private dif difficulty = dif.EASY;
+    private Difficulty difficulty = Difficulty.EASY;
 
-    public enum GameStatus {
-        GAME, NEWGAME, LEADERBOARD, GAMEOVER
-    }
+    public enum GameStatus {GAME, NEWGAME, LEADERBOARD, GAMEOVER}
 
     private GameStatus gameStatus = GameStatus.GAME;
 
@@ -41,31 +35,31 @@ public class Main extends Application implements GameOverListener {
             Canvas canvas = new Canvas(gameWindowSize, gameWindowSize);
             root.getChildren().add(canvas);
             Scene scene = new Scene(root);
-            createMenu(root);
             primaryStage.setScene(scene);
             primaryStage.show();
             gc = canvas.getGraphicsContext2D();
-            run(scene);
+            run(root, canvas, scene);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
     }
 
-    private void run(Scene scene) {
+    private void run(Group root, Canvas canvas, Scene scene) {
         Screen screen = new Screen(gameWindowSize, scene, gc);
         Leaderboard leaderboard = new Leaderboard(gc);
         leaderboard.initLeaderboard();
         screen.registerGameOverListener(this);
+        screen.registerDifficultyListener(this);
+        screen.getSnake().registerGameOverListener(this);
         new AnimationTimer() {
             public void handle(long currTime) {
                 switch (gameStatus) {
                     case GAME -> {
-                        savedToFile = false;
-                        screen.getSnake().setGameOver(false);
-                        screen.updateScreen(difficulty, gameStatus, gc);
-                        if (screen.getSnake().getGameOver())
-                            setGameStatus(GameStatus.GAMEOVER);
                         try {
+                            Text score = screen.drawScore(gc);
+                            root.getChildren().remove(score);
+                            screen.updateScreen(root, canvas, difficulty, gameStatus, gc);
+                            root.getChildren().add(score);
                             Thread.sleep(75);
                         } catch (InterruptedException e) {
                             e.printStackTrace();
@@ -74,15 +68,16 @@ public class Main extends Application implements GameOverListener {
                     case NEWGAME -> {
                         screen.setSnake(new Snake(new Tail(360, 400, 40, 40), gameWindowSize, scene, gc));
                         screen.initFood(difficulty);
+                        savedToFile = false;
                         gameStatus = GameStatus.GAME;
                     }
                     case LEADERBOARD -> {
-
                         leaderboard.show();
                     }
                     case GAMEOVER -> {
-                        leaderboard.updateScores(leaderboard.getPoints(), screen.getSnake().getScore());
-                        leaderboard.saveLeaderboard(savedToFile, leaderboard.getPoints());
+                        Text gameOver = new Text((float) gameWindowSize / 3, (float) gameWindowSize / 2, "GAME OVER!");
+                        //leaderboard.updateScores(leaderboard.getPoints(), screen.getSnake().getScore());
+                        //leaderboard.saveLeaderboard(savedToFile, leaderboard.getPoints());
                         savedToFile = true;
                     }
                 }
@@ -90,63 +85,21 @@ public class Main extends Application implements GameOverListener {
         }.start();
     }
 
-    private void createMenu(Group root) {
-        MenuBar menuBar = new MenuBar();
-        Menu menu = new Menu("Menu");
-        MenuItem newGame = new MenuItem("New Game");
-        newGame.setOnAction(new EventHandler<ActionEvent>() {
-            public void handle(ActionEvent t) {
-                gameStatus = GameStatus.NEWGAME;
-            }
-        });
-        MenuItem leaderboard = new MenuItem("Leaderboard");
-        leaderboard.setOnAction(new EventHandler<ActionEvent>() {
-            public void handle(ActionEvent t) {
-                gameStatus = GameStatus.LEADERBOARD;
-            }
-        });
-        MenuItem exit = new MenuItem("Exit");
-        exit.setOnAction(new EventHandler<ActionEvent>() {
-            public void handle(ActionEvent t) {
-                System.exit(0);
-            }
-        });
-        menu.getItems().addAll(newGame, leaderboard, exit);
-
-        Menu menuDiff = new Menu("Difficulty");
-        MenuItem easy = new MenuItem("Easy");
-        easy.setOnAction(new EventHandler<ActionEvent>() {
-            public void handle(ActionEvent t) {
-                difficulty = dif.EASY;
-                gameStatus = GameStatus.NEWGAME;
-            }
-        });
-        MenuItem medium = new MenuItem("Medium");
-        medium.setOnAction(new EventHandler<ActionEvent>() {
-            public void handle(ActionEvent t) {
-                difficulty = dif.MEDIUM;
-                gameStatus = GameStatus.NEWGAME;
-            }
-        });
-        MenuItem hard = new MenuItem("Hard");
-        hard.setOnAction(new EventHandler<ActionEvent>() {
-            public void handle(ActionEvent t) {
-                difficulty = dif.HARD;
-                gameStatus = GameStatus.NEWGAME;
-            }
-        });
-        menuDiff.getItems().addAll(easy, medium, hard);
-
-        menuBar.getMenus().addAll(menu, menuDiff);
-        root.getChildren().addAll(menuBar);
-    }
-
     public void setGameStatus(GameStatus gameStatus) {
         this.gameStatus = gameStatus;
     }
 
+    public void setDifficulty(Difficulty difficulty) {
+        this.difficulty = difficulty;
+    }
+
     @Override
-    public void gameOverHandler() {
-        setGameStatus(GameStatus.GAMEOVER);
+    public void gameStatusHandler(GameStatus gs) {
+        setGameStatus(gs);
+    }
+
+    @Override
+    public void difficultyHandler(Difficulty difficulty) {
+        setDifficulty(difficulty);
     }
 }

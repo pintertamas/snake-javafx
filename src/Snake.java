@@ -12,7 +12,7 @@ public class Snake {
     private final Tail head;
     private final int windowSize;
     private final Scene scene;
-    private boolean gameOver;
+    private final ArrayList<GameStatusListener> gameOverListeners;
     private final GraphicsContext gc;
 
     private enum dir {
@@ -28,7 +28,7 @@ public class Snake {
         this.direction = dir.RIGHT;
         this.windowSize = windowSize;
         this.scene = scene;
-        this.gameOver = false;
+        gameOverListeners = new ArrayList<>();
         this.gc = gc;
     }
 
@@ -74,27 +74,25 @@ public class Snake {
             }
             switch (direction) {
                 case RIGHT -> {
-                    if (tails.get(0).getPosX() + 40 <= windowSize - 40)
+                    if (tails.get(0).getPosX() + 40 < windowSize)
                         tails.get(0).setPosX(tails.get(0).getPosX() + 40);
-                    else gameOver = true;
+                    else gameStatus(Main.GameStatus.GAMEOVER);
                 }
                 case LEFT -> {
                     if (tails.get(0).getPosX() - 40 >= 0)
                         tails.get(0).setPosX(tails.get(0).getPosX() - 40);
-                    else
-                        gameOver = true;
+                    else gameStatus(Main.GameStatus.GAMEOVER);
                 }
                 case UP -> {
                     if (tails.get(0).getPosY() - 40 >= 0)
                         tails.get(0).setPosY(tails.get(0).getPosY() - 40);
-                    else gameOver = true;
+                    else gameStatus(Main.GameStatus.GAMEOVER);
 
                 }
                 case DOWN -> {
-                    if (tails.get(0).getPosY() + 40 <= windowSize - 40)
+                    if (tails.get(0).getPosY() + 40 < windowSize)
                         tails.get(0).setPosY(tails.get(0).getPosY() + 40);
-                    else gameOver = true;
-
+                    else gameStatus(Main.GameStatus.GAMEOVER);
                 }
             }
             drawSnake(gc);
@@ -109,16 +107,16 @@ public class Snake {
         return head;
     }
 
-    public boolean getGameOver() {
-        return gameOver;
-    }
-
-    public void setGameOver(boolean gameOver) {
-        this.gameOver = gameOver;
-    }
-
     public int getScore() {
         return tails.size();
     }
 
+    public void registerGameOverListener(GameStatusListener gol) {
+        gameOverListeners.add(gol);
+    }
+
+    private void gameStatus(Main.GameStatus gs) {
+        for (GameStatusListener gol : gameOverListeners)
+            gol.gameStatusHandler(gs);
+    }
 }
