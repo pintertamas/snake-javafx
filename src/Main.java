@@ -10,8 +10,6 @@ import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.stage.Stage;
 
-import java.io.IOException;
-
 public class Main extends Application {
 
     private final int gameWindowSize = 800;
@@ -27,6 +25,8 @@ public class Main extends Application {
     }
 
     private GameStatus gameStatus = GameStatus.GAME;
+
+    private boolean savedToFile = false;
 
     public static void main(String[] args) {
         launch(args);
@@ -52,13 +52,16 @@ public class Main extends Application {
     }
 
     private void run(Scene scene) {
-        Screen map = new Screen(gameWindowSize, scene, gc);
+        Screen screen = new Screen(gameWindowSize, scene, gc);
         Leaderboard leaderboard = new Leaderboard(gc);
+        leaderboard.initLeaderboard();
         new AnimationTimer() {
             public void handle(long currTime) {
                 switch (gameStatus) {
                     case GAME -> {
-                        map.updateScreen(difficulty, gameStatus, gc);
+                        screen.updateScreen(difficulty, gameStatus, gc);
+                        if (screen.getSnake().getGameOver() || screen.isGameOver())
+                            setGameStatus(GameStatus.GAMEOVER);
                         try {
                             Thread.sleep(75);
                         } catch (InterruptedException e) {
@@ -66,18 +69,18 @@ public class Main extends Application {
                         }
                     }
                     case NEWGAME -> {
-                        map.setSnake(new Snake(new Tail(360, 400, 40, 40), gameWindowSize, scene, gc));
-                        map.initFood(difficulty);
+                        screen.setSnake(new Snake(new Tail(360, 400, 40, 40), gameWindowSize, scene, gc));
+                        screen.initFood(difficulty);
                         gameStatus = GameStatus.GAME;
                     }
                     case LEADERBOARD -> {
-                        try {
-                            leaderboard.show();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
+
+                        leaderboard.show();
                     }
-                    case GAMEOVER -> System.out.println("gameover");
+                    case GAMEOVER -> {
+                        leaderboard.updateScores(leaderboard.getPoints(), screen.getSnake().getScore());
+                        leaderboard.saveLeaderboard(savedToFile, leaderboard.getPoints());
+                    }
                 }
             }
         }.start();
@@ -133,10 +136,8 @@ public class Main extends Application {
         menuBar.getMenus().addAll(menu, menuDiff);
         root.getChildren().addAll(menuBar);
     }
-}
 
-interface OnGeekEventListener {
-
-    // this can be any type of method
-    void onGeekEvent();
+    public void setGameStatus(GameStatus gameStatus) {
+        this.gameStatus = gameStatus;
+    }
 }

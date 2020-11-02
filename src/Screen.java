@@ -11,7 +11,7 @@ public class Screen {
     private final int cellCount = 20;
     private Snake snake;
     private ArrayList<Food> foods;
-    private Leaderboard leaderboard;
+    private boolean gameOver = false;
 
     public Screen(int windowSize, Scene scene, GraphicsContext gc) {
         Screen.windowSize = windowSize;
@@ -34,7 +34,8 @@ public class Screen {
         snake.drawSnake(gc);
         drawScore(gc);
         checkFoodCollision();
-        checkSelfCollision(gameStatus);
+        checkSelfCollision();
+        checkWallCollision();
     }
 
     public void checkFoodCollision() {
@@ -45,22 +46,23 @@ public class Screen {
             }
     }
 
-    public void checkWallCollision(Main.GameStatus gameStatus) {
+    public void checkWallCollision() {
         if (snake.head().getPosX() < 0 ||
                 snake.head().getPosX() > windowSize ||
                 snake.head().getPosY() < 0 ||
                 snake.head().getPosY() > windowSize)
-            gameStatus = Main.GameStatus.GAMEOVER;
+            gameOver = true;
     }
 
-    public void checkSelfCollision(Main.GameStatus gameStatus) {
-        for (int i = 0; i < snake.getTails().size(); i++)
-            for (int j = i; j < snake.getTails().size() - i; j++)
-                if (snake.getTails().get(i).getPosX() == snake.getTails().get(j).getPosX() &&
-                        snake.getTails().get(i).getPosY() == snake.getTails().get(j).getPosY()) {
-                    gameStatus = Main.GameStatus.GAMEOVER;
-                    break;
-                }
+    public void checkSelfCollision() {
+        if (snake.getTails().size() > 1)
+            for (int i = 0; i < snake.getTails().size(); i++)
+                for (int j = i + 1; j < snake.getTails().size() - i; j++)
+                    if (snake.getTails().get(i).getPosX() == snake.getTails().get(j).getPosX() &&
+                            snake.getTails().get(i).getPosY() == snake.getTails().get(j).getPosY()) {
+                        gameOver = true;
+                        break;
+                    }
     }
 
     private void drawBackground(GraphicsContext gc) {
@@ -82,7 +84,6 @@ public class Screen {
         Text scoreText = new Text(Integer.toString(snake.getTails().size()));
         scoreText.setX(windowSize - 20);
         scoreText.setY(30);
-
     }
 
     public void generateFood(Main.dif difficulty, GraphicsContext gc) {
@@ -122,10 +123,6 @@ public class Screen {
             food.drawFood(food, gc);
     }
 
-    public void addFood(Food food) {
-        foods.add(food);
-    }
-
     public void setSnake(Snake snake) {
         this.snake = snake;
     }
@@ -138,5 +135,13 @@ public class Screen {
         else if (difficulty == Main.dif.HARD)
             return 3;
         else return 0;
+    }
+
+    public Snake getSnake() {
+        return snake;
+    }
+
+    public boolean isGameOver() {
+        return gameOver;
     }
 }
