@@ -26,7 +26,7 @@ public class Leaderboard {
             }
             scanner.close();
         } catch (FileNotFoundException e) {
-            System.out.println("An error occurred.");
+            System.out.println("An error occurred.\n");
             e.printStackTrace();
         }
     }
@@ -41,7 +41,7 @@ public class Leaderboard {
                     out.writeObject(point);
                 out.close();
                 fileOut.close();
-                System.out.printf("Serialized data is saved in leaderboard.ser");
+                System.out.printf("Serialized data is saved in leaderboard.ser\n");
             } catch (IOException i) {
                 i.printStackTrace();
             }

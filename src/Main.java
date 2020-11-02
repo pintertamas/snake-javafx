@@ -59,6 +59,8 @@ public class Main extends Application {
             public void handle(long currTime) {
                 switch (gameStatus) {
                     case GAME -> {
+                        savedToFile = false;
+                        screen.getSnake().setGameOver(false);
                         screen.updateScreen(difficulty, gameStatus, gc);
                         if (screen.getSnake().getGameOver() || screen.isGameOver())
                             setGameStatus(GameStatus.GAMEOVER);
@@ -80,6 +82,7 @@ public class Main extends Application {
                     case GAMEOVER -> {
                         leaderboard.updateScores(leaderboard.getPoints(), screen.getSnake().getScore());
                         leaderboard.saveLeaderboard(savedToFile, leaderboard.getPoints());
+                        savedToFile = true;
                     }
                 }
             }

@@ -113,6 +113,10 @@ public class Snake {
         return gameOver;
     }
 
+    public void setGameOver(boolean gameOver) {
+        this.gameOver = gameOver;
+    }
+
     public int getScore() {
         return tails.size();
     }
