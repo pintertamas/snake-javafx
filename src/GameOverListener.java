@@ -1,0 +1,3 @@
+interface GameOverListener {
+    void gameOverHandler();
+}

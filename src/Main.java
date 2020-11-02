@@ -10,7 +10,7 @@ import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.stage.Stage;
 
-public class Main extends Application {
+public class Main extends Application implements GameOverListener {
 
     private final int gameWindowSize = 800;
 
@@ -55,6 +55,7 @@ public class Main extends Application {
         Screen screen = new Screen(gameWindowSize, scene, gc);
         Leaderboard leaderboard = new Leaderboard(gc);
         leaderboard.initLeaderboard();
+        screen.registerGameOverListener(this);
         new AnimationTimer() {
             public void handle(long currTime) {
                 switch (gameStatus) {
@@ -62,7 +63,7 @@ public class Main extends Application {
                         savedToFile = false;
                         screen.getSnake().setGameOver(false);
                         screen.updateScreen(difficulty, gameStatus, gc);
-                        if (screen.getSnake().getGameOver() || screen.isGameOver())
+                        if (screen.getSnake().getGameOver())
                             setGameStatus(GameStatus.GAMEOVER);
                         try {
                             Thread.sleep(75);
@@ -142,5 +143,10 @@ public class Main extends Application {
 
     public void setGameStatus(GameStatus gameStatus) {
         this.gameStatus = gameStatus;
+    }
+
+    @Override
+    public void gameOverHandler() {
+        setGameStatus(GameStatus.GAMEOVER);
     }
 }

@@ -11,7 +11,7 @@ public class Screen {
     private final int cellCount = 20;
     private Snake snake;
     private ArrayList<Food> foods;
-    private boolean gameOver = false;
+    private ArrayList<GameOverListener> gameOverListeners;
 
     public Screen(int windowSize, Scene scene, GraphicsContext gc) {
         Screen.windowSize = windowSize;
@@ -51,7 +51,7 @@ public class Screen {
                 snake.head().getPosX() > windowSize ||
                 snake.head().getPosY() < 0 ||
                 snake.head().getPosY() > windowSize)
-            gameOver = true;
+            gameOver();
     }
 
     public void checkSelfCollision() {
@@ -60,7 +60,7 @@ public class Screen {
                 for (int j = i + 1; j < snake.getTails().size() - i; j++)
                     if (snake.getTails().get(i).getPosX() == snake.getTails().get(j).getPosX() &&
                             snake.getTails().get(i).getPosY() == snake.getTails().get(j).getPosY()) {
-                        gameOver = true;
+                        gameOver();
                         break;
                     }
     }
@@ -141,7 +141,13 @@ public class Screen {
         return snake;
     }
 
-    public boolean isGameOver() {
-        return gameOver;
+    public void registerGameOverListener(GameOverListener gol) {
+        gameOverListeners.add(gol);
     }
+
+    private void gameOver() {
+        for (GameOverListener gol : gameOverListeners)
+            gol.gameOverHandler();
+    }
+
 }
