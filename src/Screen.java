@@ -1,12 +1,7 @@
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.control.Menu;
-import javafx.scene.control.MenuBar;
-import javafx.scene.control.MenuItem;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 
@@ -38,7 +33,6 @@ public class Screen {
 
     public void updateScreen(Group root, Canvas canvas, Main.Difficulty difficulty, Main.GameStatus gameStatus, GraphicsContext gc) {
         resetScreen(root, canvas);
-        createMenu(root);
         drawBackground(gc);
         generateFood(difficulty, gc);
         snake.changeDirection();
@@ -55,56 +49,7 @@ public class Screen {
         root.getChildren().add(canvas);
     }
 
-    private void createMenu(Group root) {
-        MenuBar menuBar = new MenuBar();
-        Menu menu = new Menu("Menu");
-        MenuItem newGame = new MenuItem("New Game");
-        newGame.setOnAction(new EventHandler<ActionEvent>() {
-            public void handle(ActionEvent t) {
-                gameStatus(Main.GameStatus.NEWGAME);
-            }
-        });
-        MenuItem leaderboard = new MenuItem("Leaderboard");
-        leaderboard.setOnAction(new EventHandler<ActionEvent>() {
-            public void handle(ActionEvent t) {
-                gameStatus(Main.GameStatus.LEADERBOARD);
-            }
-        });
-        MenuItem exit = new MenuItem("Exit");
-        exit.setOnAction(new EventHandler<ActionEvent>() {
-            public void handle(ActionEvent t) {
-                System.exit(0);
-            }
-        });
-        menu.getItems().addAll(newGame, leaderboard, exit);
 
-        Menu menuDiff = new Menu("Difficulty");
-        MenuItem easy = new MenuItem("Easy");
-        easy.setOnAction(new EventHandler<ActionEvent>() {
-            public void handle(ActionEvent t) {
-                difficulty(Main.Difficulty.EASY);
-                gameStatus(Main.GameStatus.NEWGAME);
-            }
-        });
-        MenuItem medium = new MenuItem("Medium");
-        medium.setOnAction(new EventHandler<ActionEvent>() {
-            public void handle(ActionEvent t) {
-                difficulty(Main.Difficulty.MEDIUM);
-                gameStatus(Main.GameStatus.NEWGAME);
-            }
-        });
-        MenuItem hard = new MenuItem("Hard");
-        hard.setOnAction(new EventHandler<ActionEvent>() {
-            public void handle(ActionEvent t) {
-                difficulty(Main.Difficulty.HARD);
-                gameStatus(Main.GameStatus.NEWGAME);
-            }
-        });
-        menuDiff.getItems().addAll(easy, medium, hard);
-
-        menuBar.getMenus().addAll(menu, menuDiff);
-        root.getChildren().addAll(menuBar);
-    }
 
     public void checkFoodCollision() {
         for (Food food : foods)

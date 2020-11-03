@@ -46,19 +46,25 @@ public class Main extends Application implements GameStatusListener, DifficultyL
 
     private void run(Group root, Canvas canvas, Scene scene) {
         Screen screen = new Screen(gameWindowSize, scene, gc);
+        Menu menu = new Menu();
         Leaderboard leaderboard = new Leaderboard(gc);
         leaderboard.initLeaderboard();
+        menu.registerGameOverListener(this);
+        menu.registerDifficultyListener(this);
         screen.registerGameOverListener(this);
         screen.registerDifficultyListener(this);
         screen.getSnake().registerGameOverListener(this);
+
+        Thread[] threads = new Thread[2];
+
         new AnimationTimer() {
             public void handle(long currTime) {
                 switch (gameStatus) {
                     case GAME -> {
                         try {
                             Text score = screen.drawScore(gc);
-                            root.getChildren().remove(score);
                             screen.updateScreen(root, canvas, difficulty, gameStatus, gc);
+                            menu.createMenu(root);
                             root.getChildren().add(score);
                             Thread.sleep(75);
                         } catch (InterruptedException e) {
