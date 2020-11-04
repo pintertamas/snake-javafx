@@ -9,17 +9,11 @@ import javafx.stage.Stage;
 public class Main extends Application implements GameStatusListener, DifficultyListener {
 
     private final int gameWindowSize = 800;
-
     private GraphicsContext gc;
-
     public enum Difficulty {EASY, MEDIUM, HARD}
-
-    private Difficulty difficulty = Difficulty.EASY;
-
     public enum GameStatus {GAME, NEWGAME, LEADERBOARD, GAMEOVER}
-
+    private Difficulty difficulty = Difficulty.EASY;
     private GameStatus gameStatus = GameStatus.GAME;
-
     private boolean savedToFile = false;
 
     public static void main(String[] args) {
@@ -45,31 +39,32 @@ public class Main extends Application implements GameStatusListener, DifficultyL
     }
 
     private void run(Group root, Canvas canvas, Scene scene) {
+        Thread[] threads = new Thread[2];
         Screen screen = new Screen(gameWindowSize, scene, gc);
-        Menu menu = new Menu();
+        threads[0] = new Thread(screen);
+        Menu menu = new Menu(root);
+        threads[1] = new Thread(menu);
+        threads[0].start();
+        threads[1].start();
         Leaderboard leaderboard = new Leaderboard(gc);
         leaderboard.initLeaderboard();
         menu.registerGameOverListener(this);
         menu.registerDifficultyListener(this);
         screen.registerGameOverListener(this);
-        screen.registerDifficultyListener(this);
         screen.getSnake().registerGameOverListener(this);
-
-        Thread[] threads = new Thread[2];
 
         new AnimationTimer() {
             public void handle(long currTime) {
                 switch (gameStatus) {
                     case GAME -> {
+                        Text score = screen.drawScore(gc);
                         try {
-                            Text score = screen.drawScore(gc);
                             screen.updateScreen(root, canvas, difficulty, gameStatus, gc);
-                            menu.createMenu(root);
-                            root.getChildren().add(score);
-                            Thread.sleep(75);
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         }
+                        menu.createMenu(root);
+                        root.getChildren().add(score);
                     }
                     case NEWGAME -> {
                         screen.setSnake(new Snake(new Tail(360, 400, 40, 40), gameWindowSize, scene, gc));

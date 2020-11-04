@@ -6,12 +6,12 @@ import javafx.scene.control.MenuItem;
 
 import java.util.ArrayList;
 
-public class Menu {
+public class Menu extends Thread {
 
     private final ArrayList<GameStatusListener> gameOverListeners;
     private final ArrayList<DifficultyListener> difficultyListeners;
 
-    public Menu() {
+    public Menu(Group root) {
         this.gameOverListeners = new ArrayList<>();
         this.difficultyListeners = new ArrayList<>();
     }

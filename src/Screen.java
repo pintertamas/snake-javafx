@@ -8,7 +8,7 @@ import javafx.scene.text.Text;
 import java.util.ArrayList;
 import java.util.Random;
 
-public class Screen {
+public class Screen extends Thread {
     private static int windowSize;
     private final int cellCount = 20;
     private Snake snake;
@@ -31,7 +31,7 @@ public class Screen {
             foods.add(new Food(-40, -40, 0, 0, 0));
     }
 
-    public void updateScreen(Group root, Canvas canvas, Main.Difficulty difficulty, Main.GameStatus gameStatus, GraphicsContext gc) {
+    public void updateScreen(Group root, Canvas canvas, Main.Difficulty difficulty, Main.GameStatus gameStatus, GraphicsContext gc) throws InterruptedException {
         resetScreen(root, canvas);
         drawBackground(gc);
         generateFood(difficulty, gc);
@@ -42,14 +42,13 @@ public class Screen {
         checkFoodCollision();
         checkSelfCollision();
         checkWallCollision();
+        sleep(100);
     }
 
     private void resetScreen(Group root, Canvas canvas) {
         root.getChildren().clear();
         root.getChildren().add(canvas);
     }
-
-
 
     public void checkFoodCollision() {
         for (Food food : foods)
@@ -94,9 +93,11 @@ public class Screen {
 
     public Text drawScore(GraphicsContext gc) {
         gc.setFill(Color.rgb(0, 0, 0));
-        Text scoreText = new Text(Integer.toString(snake.getTails().size()));
-        scoreText.setX(windowSize - 20);
+        Text scoreText = new Text("Score: " + Integer.toString(snake.getTails().size()));
+        scoreText.setX(windowSize - 120);
         scoreText.setY(30);
+        scoreText.setScaleX(3);
+        scoreText.setScaleY(3);
         return scoreText;
     }
 
@@ -157,14 +158,4 @@ public class Screen {
         for (GameStatusListener gol : gameOverListeners)
             gol.gameStatusHandler(gs);
     }
-
-    public void registerDifficultyListener(DifficultyListener dl) {
-        difficultyListeners.add(dl);
-    }
-
-    private void difficulty(Main.Difficulty difficulty) {
-        for (DifficultyListener dl : difficultyListeners)
-            dl.difficultyHandler(difficulty);
-    }
-
 }
