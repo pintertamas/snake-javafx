@@ -77,11 +77,6 @@ public class Menu {
         root.getChildren().addAll(menuGroup);
     }
 
-    public void drawMenu(float windowSize, GraphicsContext gc) {
-        gc.setFill(Color.BLUEVIOLET);
-        gc.fillRect(0, 0, windowSize, windowSize);
-    }
-
     public void registerGameOverListener(GameStatusListener gol) {
         gameOverListeners.add(gol);
     }

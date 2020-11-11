@@ -81,7 +81,7 @@ public class Screen {
                     }
     }
 
-    private void drawBackground(GraphicsContext gc) {
+    public void drawBackground(GraphicsContext gc) {
         for (int i = 0; i < cellCount; i++) {
             for (int j = 0; j < cellCount; j++) {
                 if ((i + j) % 2 == 0)

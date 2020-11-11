@@ -55,7 +55,7 @@ public class Main extends Application implements GameStatusListener, DifficultyL
                 switch (gameStatus) {
                     case MENU -> {
                         screen.resetScreen(root, canvas);
-                        menu.drawMenu(gameWindowSize, gc);
+                        screen.drawBackground(gc);
                         menu.createMenu(root, gameWindowSize);
                     }
                     case GAME -> {
