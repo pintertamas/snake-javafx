@@ -1,70 +1,85 @@
-import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.geometry.Pos;
 import javafx.scene.Group;
-import javafx.scene.control.MenuBar;
-import javafx.scene.control.MenuItem;
+import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.Button;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Text;
 
 import java.util.ArrayList;
 
-public class Menu extends Thread {
+public class Menu {
 
     private final ArrayList<GameStatusListener> gameOverListeners;
     private final ArrayList<DifficultyListener> difficultyListeners;
 
-    public Menu(Group root) {
+    public Menu() {
         this.gameOverListeners = new ArrayList<>();
         this.difficultyListeners = new ArrayList<>();
     }
 
-    public void createMenu(Group root) {
-        MenuBar menuBar = new MenuBar();
-        javafx.scene.control.Menu menu = new javafx.scene.control.Menu("Menu");
-        MenuItem newGame = new MenuItem("New Game");
-        newGame.setOnAction(new EventHandler<ActionEvent>() {
-            public void handle(ActionEvent t) {
+    public void createMenu(Group root, int windowsSize) {
+        String menuButtonStyle = "-fx-padding: 15;\n" +
+                "    -fx-background-insets: 0,0 0 5 0, 0 0 6 0, 0 0 7 0;\n" +
+                "    -fx-background-radius: 10;\n" +
+                "    -fx-background-color: \n" +
+                "        linear-gradient(from 0% 93% to 0% 100%, #a34313 0%, #903b12 100%),\n" +
+                "        #9d4024,\n" +
+                "        #d86e3a,\n" +
+                "        radial-gradient(center 50% 50%, radius 100%, #d86e3a, #c54e2c);\n" +
+                "    -fx-effect: dropshadow( gaussian , rgba(0,0,0,0.75) , 4,0,0,1 );\n" +
+                "    -fx-font-weight: bold;\n" +
+                "    -fx-font-size: 2em;";
+
+        String snakeTextStyle = "-fx-font-weight: bold;\n" + "-fx-font-size: 4em;";
+        Text snakeText = new Text((float) windowsSize / 3, (float) windowsSize / 2, "SNAKE\n");
+        snakeText.setStyle(snakeTextStyle);
+
+        Button newGame = new Button("New Game");
+        Button leaderboard = new Button("Leaderboard");
+        Button exit = new Button("Exit");
+
+        newGame.setMinSize(200,200);
+
+        newGame.setStyle(menuButtonStyle);
+        leaderboard.setStyle(menuButtonStyle);
+        exit.setStyle(menuButtonStyle);
+
+        newGame.setOnMousePressed(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
                 gameStatus(Main.GameStatus.NEWGAME);
             }
         });
-        MenuItem leaderboard = new MenuItem("Leaderboard");
-        leaderboard.setOnAction(new EventHandler<ActionEvent>() {
-            public void handle(ActionEvent t) {
+
+        leaderboard.setOnMousePressed(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
                 gameStatus(Main.GameStatus.LEADERBOARD);
             }
         });
-        MenuItem exit = new MenuItem("Exit");
-        exit.setOnAction(new EventHandler<ActionEvent>() {
-            public void handle(ActionEvent t) {
+
+        exit.setOnMousePressed(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
                 System.exit(0);
             }
         });
-        menu.getItems().addAll(newGame, leaderboard, exit);
 
-        javafx.scene.control.Menu menuDiff = new javafx.scene.control.Menu("Difficulty");
-        MenuItem easy = new MenuItem("Easy");
-        easy.setOnAction(new EventHandler<ActionEvent>() {
-            public void handle(ActionEvent t) {
-                difficulty(Main.Difficulty.EASY);
-                gameStatus(Main.GameStatus.NEWGAME);
-            }
-        });
-        MenuItem medium = new MenuItem("Medium");
-        medium.setOnAction(new EventHandler<ActionEvent>() {
-            public void handle(ActionEvent t) {
-                difficulty(Main.Difficulty.MEDIUM);
-                gameStatus(Main.GameStatus.NEWGAME);
-            }
-        });
-        MenuItem hard = new MenuItem("Hard");
-        hard.setOnAction(new EventHandler<ActionEvent>() {
-            public void handle(ActionEvent t) {
-                difficulty(Main.Difficulty.HARD);
-                gameStatus(Main.GameStatus.NEWGAME);
-            }
-        });
-        menuDiff.getItems().addAll(easy, medium, hard);
+        VBox menuGroup = new VBox(25);
+        menuGroup.getChildren().addAll(snakeText, newGame, leaderboard, exit);
+        menuGroup.setMinWidth((float)windowsSize/5);
+        menuGroup.setLayoutX((float)windowsSize/2 - menuGroup.getMinWidth()/2);
+        menuGroup.setLayoutY((float)windowsSize/7);
+        menuGroup.setAlignment(Pos.CENTER);
+        root.getChildren().addAll(menuGroup);
+    }
 
-        menuBar.getMenus().addAll(menu, menuDiff);
-        root.getChildren().add(menuBar);
+    public void drawMenu(float windowSize, GraphicsContext gc) {
+        gc.setFill(Color.BLUEVIOLET);
+        gc.fillRect(0, 0, windowSize, windowSize);
     }
 
     public void registerGameOverListener(GameStatusListener gol) {

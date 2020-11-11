@@ -8,20 +8,18 @@ import javafx.scene.text.Text;
 import java.util.ArrayList;
 import java.util.Random;
 
-public class Screen extends Thread {
+public class Screen {
     private static int windowSize;
     private final int cellCount = 20;
     private Snake snake;
     private ArrayList<Food> foods;
-    private final ArrayList<GameStatusListener> gameOverListeners;
-    private final ArrayList<DifficultyListener> difficultyListeners;
+    private final ArrayList<GameStatusListener> gameStatusListeners;
 
     public Screen(int windowSize, Scene scene, GraphicsContext gc) {
         Screen.windowSize = windowSize;
         this.snake = new Snake(new Tail(360, 400, 40, 40), windowSize, scene, gc);
         this.foods = new ArrayList<>();
-        this.gameOverListeners = new ArrayList<>();
-        this.difficultyListeners = new ArrayList<>();
+        this.gameStatusListeners = new ArrayList<>();
     }
 
     public void initFood(Main.Difficulty difficulty) {
@@ -31,7 +29,7 @@ public class Screen extends Thread {
             foods.add(new Food(-40, -40, 0, 0, 0));
     }
 
-    public void updateScreen(Group root, Canvas canvas, Main.Difficulty difficulty, Main.GameStatus gameStatus, GraphicsContext gc) throws InterruptedException {
+    public void updateScreen(Group root, Canvas canvas, Main.Difficulty difficulty, Main.GameStatus gameStatus, GraphicsContext gc) {
         resetScreen(root, canvas);
         drawBackground(gc);
         generateFood(difficulty, gc);
@@ -42,10 +40,16 @@ public class Screen extends Thread {
         checkFoodCollision();
         checkSelfCollision();
         checkWallCollision();
-        sleep(100);
+        try{
+            Thread.sleep(100);
+        }
+        catch (InterruptedException ex) {
+            ex.printStackTrace();
+        }
+
     }
 
-    private void resetScreen(Group root, Canvas canvas) {
+    public void resetScreen(Group root, Canvas canvas) {
         root.getChildren().clear();
         root.getChildren().add(canvas);
     }
@@ -93,7 +97,7 @@ public class Screen extends Thread {
 
     public Text drawScore(GraphicsContext gc) {
         gc.setFill(Color.rgb(0, 0, 0));
-        Text scoreText = new Text("Score: " + Integer.toString(snake.getTails().size()));
+        Text scoreText = new Text("Score: " + snake.getTails().size());
         scoreText.setX(windowSize - 120);
         scoreText.setY(30);
         scoreText.setScaleX(3);
@@ -150,12 +154,12 @@ public class Screen extends Thread {
         return snake;
     }
 
-    public void registerGameOverListener(GameStatusListener gol) {
-        gameOverListeners.add(gol);
+    public void registerGameStatusListener(GameStatusListener gsl) {
+        gameStatusListeners.add(gsl);
     }
 
     private void gameStatus(Main.GameStatus gs) {
-        for (GameStatusListener gol : gameOverListeners)
+        for (GameStatusListener gol : gameStatusListeners)
             gol.gameStatusHandler(gs);
     }
 }

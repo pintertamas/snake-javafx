@@ -7,7 +7,7 @@ import java.util.Scanner; // Import the Scanner class to read text files
 public class Leaderboard {
 
     private final ArrayList<Integer> points;
-    private GraphicsContext gc;
+    private final GraphicsContext gc;
 
     public Leaderboard(GraphicsContext gc) {
         points = new ArrayList<>();

@@ -11,9 +11,9 @@ public class Main extends Application implements GameStatusListener, DifficultyL
     private final int gameWindowSize = 800;
     private GraphicsContext gc;
     public enum Difficulty {EASY, MEDIUM, HARD}
-    public enum GameStatus {GAME, NEWGAME, LEADERBOARD, GAMEOVER}
+    public enum GameStatus {MENU, GAME, NEWGAME, LEADERBOARD, GAMEOVER}
     private Difficulty difficulty = Difficulty.EASY;
-    private GameStatus gameStatus = GameStatus.GAME;
+    private GameStatus gameStatus = GameStatus.MENU;
     private boolean savedToFile = false;
 
     public static void main(String[] args) {
@@ -39,35 +39,32 @@ public class Main extends Application implements GameStatusListener, DifficultyL
     }
 
     private void run(Group root, Canvas canvas, Scene scene) {
-        Thread[] threads = new Thread[2];
         Screen screen = new Screen(gameWindowSize, scene, gc);
-        threads[0] = new Thread(screen);
-        Menu menu = new Menu(root);
-        threads[1] = new Thread(menu);
-        threads[0].start();
-        threads[1].start();
+        Menu menu = new Menu();
         Leaderboard leaderboard = new Leaderboard(gc);
+        GameOver gameOver = new GameOver();
         leaderboard.initLeaderboard();
         menu.registerGameOverListener(this);
         menu.registerDifficultyListener(this);
-        screen.registerGameOverListener(this);
+        screen.registerGameStatusListener(this);
         screen.getSnake().registerGameOverListener(this);
+        gameOver.registerGameStatusListener(this);
 
         new AnimationTimer() {
             public void handle(long currTime) {
                 switch (gameStatus) {
+                    case MENU -> {
+                        screen.resetScreen(root, canvas);
+                        menu.drawMenu(gameWindowSize, gc);
+                        menu.createMenu(root, gameWindowSize);
+                    }
                     case GAME -> {
                         Text score = screen.drawScore(gc);
-                        try {
-                            screen.updateScreen(root, canvas, difficulty, gameStatus, gc);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                        menu.createMenu(root);
+                        screen.updateScreen(root, canvas, difficulty, gameStatus, gc);
                         root.getChildren().add(score);
                     }
                     case NEWGAME -> {
-                        screen.setSnake(new Snake(new Tail(360, 400, 40, 40), gameWindowSize, scene, gc));
+                        screen.setSnake(new Snake(new Tail(360, 360, 40, 40), gameWindowSize, scene, gc));
                         screen.initFood(difficulty);
                         savedToFile = false;
                         gameStatus = GameStatus.GAME;
@@ -76,10 +73,9 @@ public class Main extends Application implements GameStatusListener, DifficultyL
                         leaderboard.show();
                     }
                     case GAMEOVER -> {
-                        Text gameOver = new Text((float) gameWindowSize / 3, (float) gameWindowSize / 2, "GAME OVER!");
+                        gameOver.drawGameOverScreen(root, gameWindowSize);
                         //leaderboard.updateScores(leaderboard.getPoints(), screen.getSnake().getScore());
                         //leaderboard.saveLeaderboard(savedToFile, leaderboard.getPoints());
-                        savedToFile = true;
                     }
                 }
             }
