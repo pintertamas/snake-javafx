@@ -30,10 +30,8 @@ public class Leaderboard {
             this.score = s;
             fileIn.close();
             in.close();
-        } catch (IOException i) {
+        } catch (IOException | ClassNotFoundException i) {
             i.printStackTrace();
-        } catch (ClassNotFoundException c) {
-            c.printStackTrace();
         }
     }
 
@@ -103,10 +101,6 @@ public class Leaderboard {
         if (score.getPoints().get(score.getPoints().size() - 1) < newScore)
             score.getPoints().set(score.getPoints().size() - 1, newScore);
         score.getPoints().sort(new ScoreComparator());
-    }
-
-    public Score getScore() {
-        return score;
     }
 
     public void registerGameOverListener(GameStatusListener gsl) {
