@@ -1,16 +1,26 @@
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
-public class Food extends Tail {
+public class Food extends DrawableUnit {
     private int red;
     private int green;
     private int blue;
+    protected Screen screen;
 
-    public Food(int posX, int posY, int r, int g, int b) {
+    public Food(Screen screen, int posX, int posY, int r, int g, int b) {
         super(posX, posY);
         this.red = r;
         this.green = g;
         this.blue = b;
+        this.screen = screen;
+    }
+
+    public Food(Screen screen) {
+        super(-40, -40);
+        this.red = 0;
+        this.green = 0;
+        this.blue = 0;
+        this.screen = screen;
     }
 
     public void drawFood(Food food, GraphicsContext gc) {
@@ -22,5 +32,10 @@ public class Food extends Tail {
         this.red = r;
         this.green = g;
         this.blue = b;
+    }
+
+    public void update() {
+        if (this.getPosX() < 0)
+            screen.relocateFood(this);
     }
 }

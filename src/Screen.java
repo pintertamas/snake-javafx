@@ -17,7 +17,7 @@ public class Screen {
 
     public Screen(int windowSize, Scene scene, GraphicsContext gc) {
         Screen.windowSize = windowSize;
-        this.snake = new Snake(new Tail(360, 400), windowSize, scene, gc);
+        this.snake = new Snake(new DrawableUnit(360, 400), windowSize, scene, gc);
         this.foods = new ArrayList<>();
         this.gameStatusListeners = new ArrayList<>();
     }
@@ -25,8 +25,11 @@ public class Screen {
     public void initFood(Main.Difficulty difficulty) {
         foods.clear();
         foods = new ArrayList<>();
-        for (int i = 0; i < getFoodCount(difficulty); i++)
-            foods.add(new Food(-40, -40, 0, 0, 0));
+        for (int i = 0; i < getFoodCount(difficulty); i++) {
+            if (difficulty == Main.Difficulty.HARD)
+                foods.add(new DisappearingFood(getScreen()));
+            else foods.add(new Food(getScreen()));
+        }
     }
 
     public void updateScreen(Group root, Canvas canvas, Main.Difficulty difficulty, Main.GameStatus gameStatus, GraphicsContext gc) {
@@ -40,10 +43,9 @@ public class Screen {
         checkFoodCollision();
         checkSelfCollision();
         checkWallCollision();
-        try{
+        try {
             Thread.sleep(100);
-        }
-        catch (InterruptedException ex) {
+        } catch (InterruptedException ex) {
             ex.printStackTrace();
         }
 
@@ -58,7 +60,7 @@ public class Screen {
         for (Food food : foods)
             if (snake.head().getPosX() == food.getPosX() && snake.head().getPosY() == food.getPosY()) {
                 food.setPosX(-1);
-                snake.addTail(new Tail(0, 0));
+                snake.addDrawableUnit(new DrawableUnit(0, 0));
             }
     }
 
@@ -71,11 +73,11 @@ public class Screen {
     }
 
     public void checkSelfCollision() {
-        if (snake.getTails().size() > 1)
-            for (int i = 0; i < snake.getTails().size(); i++)
-                for (int j = i + 1; j < snake.getTails().size() - i; j++)
-                    if (snake.getTails().get(i).getPosX() == snake.getTails().get(j).getPosX() &&
-                            snake.getTails().get(i).getPosY() == snake.getTails().get(j).getPosY()) {
+        if (snake.getDrawableUnits().size() > 1)
+            for (int i = 0; i < snake.getDrawableUnits().size(); i++)
+                for (int j = i + 1; j < snake.getDrawableUnits().size() - i; j++)
+                    if (snake.getDrawableUnits().get(i).getPosX() == snake.getDrawableUnits().get(j).getPosX() &&
+                            snake.getDrawableUnits().get(i).getPosY() == snake.getDrawableUnits().get(j).getPosY()) {
                         gameStatus(Main.GameStatus.GAMEOVER);
                         break;
                     }
@@ -109,41 +111,55 @@ public class Screen {
         if (foods.size() != getFoodCount(difficulty))
             initFood(difficulty);
         for (Food food : foods) {
-            if (food.getPosX() < 0) {
-                Random rand = new Random();
-                int low = 0;
-                int high = cellCount;
-                int posX;
-                int posY;
-                int r = rand.nextInt(255);
-                int g = rand.nextInt(100);
-                int b = rand.nextInt(255);
-                while (true) {
-                    boolean correctFoodPosition = true;
-                    posX = (windowSize / cellCount) * rand.nextInt(high - low) + low;
-                    posY = (windowSize / cellCount) * rand.nextInt(high - low) + low;
-                    for (Tail tail : snake.getTails()) {
-                        if (tail.getPosX() == posX && tail.getPosY() == posY) {
-                            correctFoodPosition = false;
-                            break;
-                        }
-                    }
-                    if (correctFoodPosition) {
-                        food.setPosX(posX);
-                        food.setPosY(posY);
-                        food.setColor(r, g, b);
-                        break;
-                    }
-                }
-
-            }
+            food.update();
         }
         for (Food food : foods)
             food.drawFood(food, gc);
     }
 
+    public void relocateFood(Food food) {
+        Random rand = new Random();
+        int low = 0;
+        int high = cellCount;
+        int posX;
+        int posY;
+        int r = rand.nextInt(255);
+        int g = rand.nextInt(100);
+        int b = rand.nextInt(255);
+        while (true) {
+            boolean correctFoodPosition = true;
+            posX = (windowSize / cellCount) * rand.nextInt(high - low) + low;
+            posY = (windowSize / cellCount) * rand.nextInt(high - low) + low;
+            for (DrawableUnit DrawableUnit : snake.getDrawableUnits()) {
+                if (DrawableUnit.getPosX() == posX && DrawableUnit.getPosY() == posY) {
+                    correctFoodPosition = false;
+                    break;
+                }
+            }
+            if (correctFoodPosition) {
+                int foodType = rand.nextInt(2);
+                Food newFood;
+                if (foodType == 1) {
+                    newFood = new Food(getScreen());
+                    newFood.setColor(r, g, b);
+                } else {
+                    newFood = new DisappearingFood(getScreen());
+                    newFood.setColor(0, 0, 0);
+                }
+                newFood.setPosX(posX);
+                newFood.setPosY(posY);
+                foods.set(foods.indexOf(food), newFood);
+                break;
+            }
+        }
+    }
+
     public void setSnake(Snake snake) {
         this.snake = snake;
+    }
+
+    public Screen getScreen() {
+        return this;
     }
 
     public int getFoodCount(Main.Difficulty difficulty) {

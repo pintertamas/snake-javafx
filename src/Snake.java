@@ -8,8 +8,8 @@ import javafx.scene.paint.Color;
 import java.util.ArrayList;
 
 public class Snake {
-    private final ArrayList<Tail> tails;
-    private final Tail head;
+    private final ArrayList<DrawableUnit> DrawableUnits;
+    private final DrawableUnit head;
     private final int windowSize;
     private final Scene scene;
     private final ArrayList<GameStatusListener> gameOverListeners;
@@ -21,9 +21,9 @@ public class Snake {
 
     private dir direction;
 
-    public Snake(Tail head, int windowSize, Scene scene, GraphicsContext gc) {
-        tails = new ArrayList<>();
-        tails.add(head);
+    public Snake(DrawableUnit head, int windowSize, Scene scene, GraphicsContext gc) {
+        DrawableUnits = new ArrayList<>();
+        DrawableUnits.add(head);
         this.head = head;
         this.direction = dir.RIGHT;
         this.windowSize = windowSize;
@@ -32,15 +32,15 @@ public class Snake {
         this.gc = gc;
     }
 
-    public void addTail(Tail t) {
-        tails.add(t);
+    public void addDrawableUnit(DrawableUnit t) {
+        DrawableUnits.add(t);
     }
 
     public void drawSnake(GraphicsContext gc) {
-        for (int i = 0; i < tails.size(); i++) {
+        for (int i = 0; i < DrawableUnits.size(); i++) {
             // r: 150, g: 0, b: (255, 130); 255-130=125
-            gc.setFill(Color.rgb(150, 0, (130 + 125 * i / tails.size())));
-            gc.fillRect(tails.get(i).getPosX(), tails.get(i).getPosY(), tails.get(i).getSize(), tails.get(i).getSize());
+            gc.setFill(Color.rgb(150, 0, (130 + 125 * i / DrawableUnits.size())));
+            gc.fillRect(DrawableUnits.get(i).getPosX(), DrawableUnits.get(i).getPosY(), DrawableUnits.get(i).getSize(), DrawableUnits.get(i).getSize());
         }
     }
 
@@ -68,47 +68,47 @@ public class Snake {
 
     public void moveSnake(Main.GameStatus gameStatus) {
         if (gameStatus != Main.GameStatus.GAMEOVER) {
-            for (int i = tails.size() - 1; i > 0; i--) {
-                tails.get(i).setPosX(tails.get(i - 1).getPosX());
-                tails.get(i).setPosY(tails.get(i - 1).getPosY());
+            for (int i = DrawableUnits.size() - 1; i > 0; i--) {
+                DrawableUnits.get(i).setPosX(DrawableUnits.get(i - 1).getPosX());
+                DrawableUnits.get(i).setPosY(DrawableUnits.get(i - 1).getPosY());
             }
             switch (direction) {
                 case RIGHT -> {
-                    if (!(tails.get(0).getPosX() + 40 < windowSize))
+                    if (!(DrawableUnits.get(0).getPosX() + 40 < windowSize))
                         gameStatus(Main.GameStatus.GAMEOVER);
-                    else tails.get(0).setPosX(tails.get(0).getPosX() + 40);
+                    else DrawableUnits.get(0).setPosX(DrawableUnits.get(0).getPosX() + 40);
                 }
                 case LEFT -> {
-                    if (!(tails.get(0).getPosX() - 40 >= 0))
+                    if (!(DrawableUnits.get(0).getPosX() - 40 >= 0))
                         gameStatus(Main.GameStatus.GAMEOVER);
-                    else tails.get(0).setPosX(tails.get(0).getPosX() - 40);
+                    else DrawableUnits.get(0).setPosX(DrawableUnits.get(0).getPosX() - 40);
                 }
                 case UP -> {
-                    if (!(tails.get(0).getPosY() - 40 >= 0))
+                    if (!(DrawableUnits.get(0).getPosY() - 40 >= 0))
                         gameStatus(Main.GameStatus.GAMEOVER);
-                    else tails.get(0).setPosY(tails.get(0).getPosY() - 40);
+                    else DrawableUnits.get(0).setPosY(DrawableUnits.get(0).getPosY() - 40);
 
                 }
                 case DOWN -> {
-                    if (!(tails.get(0).getPosY() + 40 < windowSize))
+                    if (!(DrawableUnits.get(0).getPosY() + 40 < windowSize))
                         gameStatus(Main.GameStatus.GAMEOVER);
-                    else tails.get(0).setPosY(tails.get(0).getPosY() + 40);
+                    else DrawableUnits.get(0).setPosY(DrawableUnits.get(0).getPosY() + 40);
                 }
             }
             drawSnake(gc);
         }
     }
 
-    public ArrayList<Tail> getTails() {
-        return tails;
+    public ArrayList<DrawableUnit> getDrawableUnits() {
+        return DrawableUnits;
     }
 
-    public Tail head() {
+    public DrawableUnit head() {
         return head;
     }
 
     public int getScore() {
-        return tails.size() - 1;
+        return DrawableUnits.size() - 1;
     }
 
     public void registerGameOverListener(GameStatusListener gol) {

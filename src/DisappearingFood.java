@@ -1,23 +1,20 @@
-import java.util.Random;
-
 public class DisappearingFood extends Food {
-    long lifetime;
     long spawnTime;
+    long lifetime;
 
-    public DisappearingFood(int posX, int posY, int r, int g, int b) {
-        super(posX, posY, r, g, b);
+    public DisappearingFood(Screen screen) {
+        super(screen);
         this.spawnTime = System.currentTimeMillis();
-        Random rand = new Random(1000-500);
-        this.lifetime = rand.nextLong();
+        this.lifetime = 2000;
     }
 
-    public void resetLifetime() {
-        this.lifetime = System.currentTimeMillis();
+    public boolean isAlive() {
+        return System.currentTimeMillis() < spawnTime + lifetime;
     }
 
-    public void checkAlive() {
-        if (System.currentTimeMillis() > spawnTime + lifetime){
-            setPosX(-40);
-        }
+    @Override
+    public void update() {
+        if (!isAlive() || getPosX() < 0)
+            screen.relocateFood(this);
     }
 }

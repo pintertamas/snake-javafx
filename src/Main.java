@@ -64,7 +64,7 @@ public class Main extends Application implements GameStatusListener, DifficultyL
                         root.getChildren().add(score);
                     }
                     case NEWGAME -> {
-                        screen.setSnake(new Snake(new Tail(360, 360), gameWindowSize, scene, gc));
+                        screen.setSnake(new Snake(new DrawableUnit(360, 360), gameWindowSize, scene, gc));
                         screen.initFood(difficulty);
                         savedToFile = false;
                         gameStatus = GameStatus.GAME;
@@ -77,8 +77,6 @@ public class Main extends Application implements GameStatusListener, DifficultyL
                         leaderboard.saveLeaderboard(savedToFile, screen.getSnake().getScore());
                         savedToFile = true;
                         gameOver.drawGameOverScreen(root, gameWindowSize);
-                        //leaderboard.updateScores(leaderboard.getPoints(), screen.getSnake().getScore());
-                        //leaderboard.saveLeaderboard(savedToFile, leaderboard.getPoints());
                     }
                 }
             }

@@ -1,9 +1,9 @@
-public class Tail {
+public class DrawableUnit {
     private int posX;
     private int posY;
     private final int size;
 
-    public Tail(int posX, int posY) {
+    public DrawableUnit(int posX, int posY) {
         this.posX = posX;
         this.posY = posY;
         size = 40;
