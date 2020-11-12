@@ -108,7 +108,7 @@ public class Snake {
     }
 
     public int getScore() {
-        return tails.size();
+        return tails.size() - 1;
     }
 
     public void registerGameOverListener(GameStatusListener gol) {

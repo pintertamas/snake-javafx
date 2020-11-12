@@ -85,9 +85,9 @@ public class Screen {
         for (int i = 0; i < cellCount; i++) {
             for (int j = 0; j < cellCount; j++) {
                 if ((i + j) % 2 == 0)
-                    gc.setFill(Color.web("AAD751"));
+                    gc.setFill(Color.rgb(170, 215, 81));
                 else {
-                    gc.setFill(Color.web("A2D149"));
+                    gc.setFill(Color.rgb(162, 209, 73));
                 }
                 int cellSize = windowSize / cellCount;
                 gc.fillRect(i * cellSize, j * cellSize, cellSize, cellSize);

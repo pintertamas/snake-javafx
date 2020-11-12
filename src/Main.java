@@ -13,7 +13,7 @@ public class Main extends Application implements GameStatusListener, DifficultyL
     public enum Difficulty {EASY, MEDIUM, HARD}
     public enum GameStatus {MENU, GAME, NEWGAME, LEADERBOARD, GAMEOVER}
     private Difficulty difficulty = Difficulty.EASY;
-    private GameStatus gameStatus = GameStatus.LEADERBOARD;
+    private GameStatus gameStatus = GameStatus.MENU;
     private boolean savedToFile = false;
 
     public static void main(String[] args) {
@@ -71,7 +71,6 @@ public class Main extends Application implements GameStatusListener, DifficultyL
                     }
                     case LEADERBOARD -> {
                         screen.resetScreen(root, canvas);
-                        screen.drawBackground(gc);
                         leaderboard.draw(root, gameWindowSize);
                     }
                     case GAMEOVER -> {
