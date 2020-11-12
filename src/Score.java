@@ -16,7 +16,4 @@ public class Score implements Serializable{
     public void addPoint(int point) {
         points.add(point);
     }
-
-
-
 }

@@ -1,10 +1,12 @@
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
-import javafx.geometry.HPos;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.control.Button;
+import javafx.scene.control.ToggleButton;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
@@ -57,11 +59,11 @@ public class Menu {
         Button leaderboard = new Button("Leaderboard");
         Button exit = new Button("Exit");
 
-        Button easy = new Button("Easy");
-        Button medium = new Button("Medium");
-        Button hard = new Button("Hard");
+        ToggleButton easy = new ToggleButton("Easy");
+        ToggleButton medium = new ToggleButton("Medium");
+        ToggleButton hard = new ToggleButton("Hard");
 
-        newGame.setMinSize(200,200);
+        newGame.setMinSize(200, 200);
 
         newGame.setStyle(menuButtonStyle);
         leaderboard.setStyle(menuButtonStyle);
@@ -95,9 +97,9 @@ public class Menu {
         easy.setOnMousePressed(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent mouseEvent) {
-                easy.setStyle(pressedButton);
-                medium.setStyle(menuButtonStyle);
-                hard.setStyle(menuButtonStyle);
+                easy.setSelected(true);
+                medium.setSelected(false);
+                hard.setSelected(false);
                 difficulty(Main.Difficulty.EASY);
             }
         });
@@ -105,9 +107,9 @@ public class Menu {
         medium.setOnMousePressed(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent mouseEvent) {
-                medium.setStyle(pressedButton);
-                easy.setStyle(menuButtonStyle);
-                hard.setStyle(menuButtonStyle);
+                easy.setSelected(false);
+                medium.setSelected(true);
+                hard.setSelected(false);
                 difficulty(Main.Difficulty.MEDIUM);
             }
         });
@@ -115,12 +117,17 @@ public class Menu {
         hard.setOnMousePressed(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent mouseEvent) {
-                hard.setStyle(pressedButton);
-                easy.setStyle(menuButtonStyle);
-                medium.setStyle(menuButtonStyle);
+                easy.setSelected(false);
+                medium.setSelected(false);
+                hard.setSelected(true);
                 difficulty(Main.Difficulty.HARD);
             }
         });
+
+        ToggleGroup tg = new ToggleGroup();
+        easy.setToggleGroup(tg);
+        medium.setToggleGroup(tg);
+        hard.setToggleGroup(tg);
 
         HBox difficultyBP = new HBox(25);
         difficultyBP.setAlignment(Pos.CENTER);
@@ -128,9 +135,9 @@ public class Menu {
 
         VBox menuGroup = new VBox(25);
         menuGroup.getChildren().addAll(snakeText, space, newGame, difficultyBP, leaderboard, exit);
-        menuGroup.setMinWidth((float)windowsSize/2);
-        menuGroup.setLayoutX((float)windowsSize/2 - menuGroup.getMinWidth()/2);
-        menuGroup.setLayoutY((float)windowsSize/7);
+        menuGroup.setMinWidth((float) windowsSize / 2);
+        menuGroup.setLayoutX((float) windowsSize / 2 - menuGroup.getMinWidth() / 2);
+        menuGroup.setLayoutY((float) windowsSize / 7);
         menuGroup.setAlignment(Pos.CENTER);
         root.getChildren().addAll(menuGroup);
     }
@@ -149,7 +156,6 @@ public class Menu {
     }
 
     private void difficulty(Main.Difficulty difficulty) {
-        System.out.println(difficulty);
         for (DifficultyListener dl : difficultyListeners)
             dl.difficultyHandler(difficulty);
     }

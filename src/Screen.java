@@ -97,7 +97,7 @@ public class Screen {
 
     public Text drawScore(GraphicsContext gc) {
         gc.setFill(Color.rgb(0, 0, 0));
-        Text scoreText = new Text("Score: " + snake.getTails().size());
+        Text scoreText = new Text("Score: " + getSnake().getScore());
         scoreText.setX(windowSize - 120);
         scoreText.setY(30);
         scoreText.setScaleX(3);
