@@ -12,11 +12,11 @@ import java.util.ArrayList;
 
 public class Menu {
 
-    private final ArrayList<GameStatusListener> gameOverListeners;
+    private final ArrayList<GameStatusListener> gameStatusListeners;
     private final ArrayList<DifficultyListener> difficultyListeners;
 
     public Menu() {
-        this.gameOverListeners = new ArrayList<>();
+        this.gameStatusListeners = new ArrayList<>();
         this.difficultyListeners = new ArrayList<>();
     }
 
@@ -77,13 +77,13 @@ public class Menu {
         root.getChildren().addAll(menuGroup);
     }
 
-    public void registerGameOverListener(GameStatusListener gol) {
-        gameOverListeners.add(gol);
+    public void registerGameOverListener(GameStatusListener gsl) {
+        gameStatusListeners.add(gsl);
     }
 
     private void gameStatus(Main.GameStatus gs) {
-        for (GameStatusListener gol : gameOverListeners)
-            gol.gameStatusHandler(gs);
+        for (GameStatusListener gsl : gameStatusListeners)
+            gsl.gameStatusHandler(gs);
     }
 
     public void registerDifficultyListener(DifficultyListener dl) {

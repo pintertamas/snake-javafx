@@ -13,7 +13,7 @@ public class Main extends Application implements GameStatusListener, DifficultyL
     public enum Difficulty {EASY, MEDIUM, HARD}
     public enum GameStatus {MENU, GAME, NEWGAME, LEADERBOARD, GAMEOVER}
     private Difficulty difficulty = Difficulty.EASY;
-    private GameStatus gameStatus = GameStatus.MENU;
+    private GameStatus gameStatus = GameStatus.LEADERBOARD;
     private boolean savedToFile = false;
 
     public static void main(String[] args) {
@@ -41,13 +41,15 @@ public class Main extends Application implements GameStatusListener, DifficultyL
     private void run(Group root, Canvas canvas, Scene scene) {
         Screen screen = new Screen(gameWindowSize, scene, gc);
         Menu menu = new Menu();
-        Leaderboard leaderboard = new Leaderboard(gc);
+        Leaderboard leaderboard = new Leaderboard();
         GameOver gameOver = new GameOver();
-        leaderboard.initLeaderboard();
+        leaderboard.resetLeaderboard();
+        //leaderboard.loadLeaderboard();
         menu.registerGameOverListener(this);
         menu.registerDifficultyListener(this);
         screen.registerGameStatusListener(this);
         screen.getSnake().registerGameOverListener(this);
+        leaderboard.registerGameOverListener(this);
         gameOver.registerGameStatusListener(this);
 
         new AnimationTimer() {
@@ -70,9 +72,13 @@ public class Main extends Application implements GameStatusListener, DifficultyL
                         gameStatus = GameStatus.GAME;
                     }
                     case LEADERBOARD -> {
-                        leaderboard.show();
+                        screen.resetScreen(root, canvas);
+                        screen.drawBackground(gc);
+                        leaderboard.draw(root, gameWindowSize);
                     }
                     case GAMEOVER -> {
+                        leaderboard.saveLeaderboard(savedToFile, screen.getSnake().getScore());
+                        savedToFile = true;
                         gameOver.drawGameOverScreen(root, gameWindowSize);
                         //leaderboard.updateScores(leaderboard.getPoints(), screen.getSnake().getScore());
                         //leaderboard.saveLeaderboard(savedToFile, leaderboard.getPoints());

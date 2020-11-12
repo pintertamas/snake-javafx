@@ -68,31 +68,31 @@ public class Snake {
 
     public void moveSnake(Main.GameStatus gameStatus) {
         if (gameStatus != Main.GameStatus.GAMEOVER) {
-            for (int i = tails.size() - 1; i >= 1; i--) {
+            for (int i = tails.size() - 1; i > 0; i--) {
                 tails.get(i).setPosX(tails.get(i - 1).getPosX());
                 tails.get(i).setPosY(tails.get(i - 1).getPosY());
             }
             switch (direction) {
                 case RIGHT -> {
-                    if (tails.get(0).getPosX() + 40 < windowSize)
-                        tails.get(0).setPosX(tails.get(0).getPosX() + 40);
-                    else gameStatus(Main.GameStatus.GAMEOVER);
+                    if (!(tails.get(0).getPosX() + 40 < windowSize))
+                        gameStatus(Main.GameStatus.GAMEOVER);
+                    else tails.get(0).setPosX(tails.get(0).getPosX() + 40);
                 }
                 case LEFT -> {
-                    if (tails.get(0).getPosX() - 40 >= 0)
-                        tails.get(0).setPosX(tails.get(0).getPosX() - 40);
-                    else gameStatus(Main.GameStatus.GAMEOVER);
+                    if (!(tails.get(0).getPosX() - 40 >= 0))
+                        gameStatus(Main.GameStatus.GAMEOVER);
+                    else tails.get(0).setPosX(tails.get(0).getPosX() - 40);
                 }
                 case UP -> {
-                    if (tails.get(0).getPosY() - 40 >= 0)
-                        tails.get(0).setPosY(tails.get(0).getPosY() - 40);
-                    else gameStatus(Main.GameStatus.GAMEOVER);
+                    if (!(tails.get(0).getPosY() - 40 >= 0))
+                        gameStatus(Main.GameStatus.GAMEOVER);
+                    else tails.get(0).setPosY(tails.get(0).getPosY() - 40);
 
                 }
                 case DOWN -> {
-                    if (tails.get(0).getPosY() + 40 < windowSize)
-                        tails.get(0).setPosY(tails.get(0).getPosY() + 40);
-                    else gameStatus(Main.GameStatus.GAMEOVER);
+                    if (!(tails.get(0).getPosY() + 40 < windowSize))
+                        gameStatus(Main.GameStatus.GAMEOVER);
+                    else tails.get(0).setPosY(tails.get(0).getPosY() + 40);
                 }
             }
             drawSnake(gc);
