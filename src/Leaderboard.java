@@ -22,16 +22,23 @@ public class Leaderboard {
     }
 
     public void loadLeaderboard() {
-        try {
-            Score s;
-            FileInputStream fileIn = new FileInputStream("leaderboard.ser");
-            ObjectInputStream in = new ObjectInputStream(fileIn);
-            s = (Score) in.readObject();
-            this.score = s;
-            fileIn.close();
-            in.close();
-        } catch (IOException | ClassNotFoundException i) {
-            i.printStackTrace();
+        File file = new File("leaderboard.ser");
+        if (file.exists()) {
+            try {
+                Score s;
+                FileInputStream fileIn = new FileInputStream("leaderboard.ser");
+                ObjectInputStream in = new ObjectInputStream(fileIn);
+                s = (Score) in.readObject();
+                this.score = s;
+                fileIn.close();
+                in.close();
+            } catch (IOException | ClassNotFoundException ex) {
+                ex.printStackTrace();
+            }
+        }
+        else {
+            resetLeaderboard();
+            saveLeaderboard(false, 0);
         }
     }
 

@@ -140,13 +140,12 @@ public class Screen {
                 Food newFood;
                 if (foodType == 1) {
                     newFood = new Food(getScreen());
-                    newFood.setColor(r, g, b);
                 } else {
                     newFood = new DisappearingFood(getScreen());
-                    newFood.setColor(0, 0, 0);
                 }
                 newFood.setPosX(posX);
                 newFood.setPosY(posY);
+                newFood.setColor(r, g, b);
                 foods.set(foods.indexOf(food), newFood);
                 break;
             }
