@@ -48,7 +48,6 @@ public class Screen {
         } catch (InterruptedException ex) {
             ex.printStackTrace();
         }
-
     }
 
     public void resetScreen(Group root, Canvas canvas) {
