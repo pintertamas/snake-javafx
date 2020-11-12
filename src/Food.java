@@ -34,8 +34,8 @@ public class Food extends DrawableUnit {
         this.blue = b;
     }
 
-    public void update() {
+    public void update(Main.Difficulty difficulty) {
         if (this.getPosX() < 0)
-            screen.relocateFood(this);
+            screen.relocateFood(this, difficulty);
     }
 }

@@ -110,13 +110,13 @@ public class Screen {
         if (foods.size() != getFoodCount(difficulty))
             initFood(difficulty);
         for (Food food : foods) {
-            food.update();
+            food.update(difficulty);
         }
         for (Food food : foods)
             food.drawFood(food, gc);
     }
 
-    public void relocateFood(Food food) {
+    public void relocateFood(Food food, Main.Difficulty difficulty) {
         Random rand = new Random();
         int low = 0;
         int high = cellCount;
@@ -136,12 +136,18 @@ public class Screen {
                 }
             }
             if (correctFoodPosition) {
-                int foodType = rand.nextInt(2);
                 Food newFood;
-                if (foodType == 1) {
-                    newFood = new Food(getScreen());
-                } else {
+                if (difficulty == Main.Difficulty.MEDIUM) {
+                    int foodType = rand.nextInt(2);
+                    if (foodType == 1) {
+                        newFood = new Food(getScreen());
+                    } else {
+                        newFood = new DisappearingFood(getScreen());
+                    }
+                } else if (difficulty == Main.Difficulty.HARD) {
                     newFood = new DisappearingFood(getScreen());
+                } else {
+                    newFood = new Food(getScreen());
                 }
                 newFood.setPosX(posX);
                 newFood.setPosY(posY);

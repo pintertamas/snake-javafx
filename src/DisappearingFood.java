@@ -13,8 +13,8 @@ public class DisappearingFood extends Food {
     }
 
     @Override
-    public void update() {
+    public void update(Main.Difficulty difficulty) {
         if (!isAlive() || getPosX() < 0)
-            screen.relocateFood(this);
+            screen.relocateFood(this, difficulty);
     }
 }
