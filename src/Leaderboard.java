@@ -8,47 +8,46 @@ import javafx.scene.text.Text;
 
 import java.io.*;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 
 public class Leaderboard {
 
-    private final ArrayList<Integer> points;
+    private Score score;
     private final ArrayList<GameStatusListener> gameStatusListeners;
 
     public Leaderboard() {
-        points = new ArrayList<>();
+        score = new Score();
         gameStatusListeners = new ArrayList<>();
+        resetLeaderboard();
+        loadLeaderboard();
     }
 
     public void loadLeaderboard() {
-        int point;
         try {
-            FileInputStream in = new FileInputStream("leaderboard.ser");
-            ObjectInputStream os = new ObjectInputStream(in);
-            for (int i = 0; i < 10; i++) {
-                point = os.read();
-                System.out.println(point);
-                addPoint(point);
-            }
+            Score s;
+            FileInputStream fileIn = new FileInputStream("leaderboard.ser");
+            ObjectInputStream in = new ObjectInputStream(fileIn);
+            s = (Score) in.readObject();
+            this.score = s;
+            fileIn.close();
             in.close();
-            os.close();
-        } catch (IOException ex) {
-            ex.printStackTrace();
+        } catch (IOException i) {
+            i.printStackTrace();
+        } catch (ClassNotFoundException c) {
+            System.out.println("Score class not found");
+            c.printStackTrace();
         }
     }
 
-    public void saveLeaderboard(boolean saved, int score) {
+    public void saveLeaderboard(boolean saved, int newScore) {
         if (!saved) {
-            updateScores(points, score);
+            updateScores(newScore);
             try {
                 FileOutputStream fileOut =
                         new FileOutputStream("leaderboard.ser");
                 ObjectOutputStream out = new ObjectOutputStream(fileOut);
-                for (Integer point : points)
-                    out.writeObject(point);
-                out.close();
+                out.writeObject(score);
                 fileOut.close();
+                out.close();
             } catch (IOException i) {
                 i.printStackTrace();
             }
@@ -57,7 +56,7 @@ public class Leaderboard {
 
     public void resetLeaderboard() {
         for (int i = 0; i < 10; i++)
-            points.add(0);
+            score.addPoint(0);
     }
 
     public void draw(Group root, int windowsSize) {
@@ -80,7 +79,7 @@ public class Leaderboard {
         leaderboardText.setStyle(leaderboardStyle);
         leaderboardGroup.getChildren().add(leaderboardText);
         for (int i = 0; i < 10; i++) {
-            text = new Text((float) windowsSize / 2, (float) 0, "#" + (i + 1) + ".\t\t" + points.get(i) + "\n");
+            text = new Text((float) windowsSize / 2, (float) 0, "#" + (i + 1) + ".\t\t" + score.getPoints().get(i) + "\n");
             text.setStyle(textStyle);
             leaderboardGroup.getChildren().add(text);
         }
@@ -100,19 +99,11 @@ public class Leaderboard {
         root.getChildren().add(leaderboardGroup);
     }
 
-    private void updateScores(ArrayList<Integer> topScores, int score) {
-        topScores.sort(new ScoreComparator());
-        if (topScores.get(topScores.size() - 1) < score)
-            topScores.set(topScores.size() - 1, score);
-        topScores.sort(new ScoreComparator());
-    }
-
-    public ArrayList<Integer> getPoints() {
-        return points;
-    }
-
-    private void addPoint(int point) {
-        points.add(point);
+    private void updateScores(int newScore) {
+        score.getPoints().sort(new ScoreComparator());
+        if (score.getPoints().get(score.getPoints().size() - 1) < newScore)
+            score.getPoints().set(score.getPoints().size() - 1, newScore);
+        score.getPoints().sort(new ScoreComparator());
     }
 
     public void registerGameOverListener(GameStatusListener gsl) {

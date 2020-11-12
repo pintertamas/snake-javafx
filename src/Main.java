@@ -43,8 +43,6 @@ public class Main extends Application implements GameStatusListener, DifficultyL
         Menu menu = new Menu();
         Leaderboard leaderboard = new Leaderboard();
         GameOver gameOver = new GameOver();
-        leaderboard.resetLeaderboard();
-        //leaderboard.loadLeaderboard();
         menu.registerGameOverListener(this);
         menu.registerDifficultyListener(this);
         screen.registerGameStatusListener(this);
