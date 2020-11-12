@@ -40,7 +40,7 @@ public class Snake {
         for (int i = 0; i < tails.size(); i++) {
             // r: 150, g: 0, b: (255, 130); 255-130=125
             gc.setFill(Color.rgb(150, 0, (130 + 125 * i / tails.size())));
-            gc.fillRect(tails.get(i).getPosX(), tails.get(i).getPosY(), tails.get(i).getSizeX(), tails.get(i).getSizeY());
+            gc.fillRect(tails.get(i).getPosX(), tails.get(i).getPosY(), tails.get(i).getSize(), tails.get(i).getSize());
         }
     }
 

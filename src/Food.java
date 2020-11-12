@@ -1,7 +1,7 @@
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
-public class Food extends Point {
+public class Food extends Tail {
     private int red;
     private int green;
     private int blue;
@@ -15,7 +15,7 @@ public class Food extends Point {
 
     public void drawFood(Food food, GraphicsContext gc) {
         gc.setFill(Color.rgb(food.red, food.green, food.blue));
-        gc.fillOval(food.getPosX(), food.getPosY(), 40, 40);
+        gc.fillOval(food.getPosX(), food.getPosY(), this.getSize(), this.getSize());
     }
 
     public void setColor(int r, int g, int b) {

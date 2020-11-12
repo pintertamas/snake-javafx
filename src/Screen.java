@@ -17,7 +17,7 @@ public class Screen {
 
     public Screen(int windowSize, Scene scene, GraphicsContext gc) {
         Screen.windowSize = windowSize;
-        this.snake = new Snake(new Tail(360, 400, 40, 40), windowSize, scene, gc);
+        this.snake = new Snake(new Tail(360, 400), windowSize, scene, gc);
         this.foods = new ArrayList<>();
         this.gameStatusListeners = new ArrayList<>();
     }
@@ -58,7 +58,7 @@ public class Screen {
         for (Food food : foods)
             if (snake.head().getPosX() == food.getPosX() && snake.head().getPosY() == food.getPosY()) {
                 food.setPosX(-1);
-                snake.addTail(new Tail(0, 0, 40, 40));
+                snake.addTail(new Tail(0, 0));
             }
     }
 

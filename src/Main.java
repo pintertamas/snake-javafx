@@ -64,7 +64,7 @@ public class Main extends Application implements GameStatusListener, DifficultyL
                         root.getChildren().add(score);
                     }
                     case NEWGAME -> {
-                        screen.setSnake(new Snake(new Tail(360, 360, 40, 40), gameWindowSize, scene, gc));
+                        screen.setSnake(new Snake(new Tail(360, 360), gameWindowSize, scene, gc));
                         screen.initFood(difficulty);
                         savedToFile = false;
                         gameStatus = GameStatus.GAME;
