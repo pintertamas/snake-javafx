@@ -26,7 +26,7 @@ public class Menu {
     public void createMenu(Group root, int windowsSize) {
         Text snakeText = new Text((float) windowsSize / 3, (float) windowsSize / 2, "SNAKE");
         Text space = new Text(" ");
-        snakeText.setId("snake-text-style");
+        snakeText.setId("snake-text");
         space.setId("space");
 
         ToggleGroup tg = new ToggleGroup();
@@ -39,7 +39,7 @@ public class Menu {
         ToggleButton medium = new ToggleButton("Medium");
         ToggleButton hard = new ToggleButton("Hard");
 
-        easy.setSelected(true);
+        //easy.setSelected(true);
 
         easy.setToggleGroup(tg);
         medium.setToggleGroup(tg);

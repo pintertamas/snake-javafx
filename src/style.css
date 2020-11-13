@@ -26,11 +26,15 @@
     -fx-font-size: 1.5em;
 }
 
-#snake-text-style {
+#snake-text {
     -fx-font-weight: bold;
     -fx-font-size: 6em;
 }
 
 #space {
     -fx-font-size: 1em;
+}
+
+.text, #menu-text, #snake-text, #leaderboard-text {
+    -fx-font-family: "Comic Sans MS";
 }
