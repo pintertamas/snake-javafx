@@ -64,37 +64,19 @@ public class Leaderboard {
     }
 
     public void draw(Group root, int windowsSize) {
-        String leaderboardStyle = "-fx-font-weight: bold;\n" + "-fx-font-size: 4em;";
-        String textStyle = "-fx-font-weight: bold;" + "-fx-font-size: 1.5em;";
-        String menuButtonStyle = "-fx-padding: 15;\n" +
-                "    -fx-background-insets: 0,0 0 5 0, 0 0 6 0, 0 0 7 0;\n" +
-                "    -fx-background-radius: 10;\n" +
-                "    -fx-background-color: \n" +
-                "        linear-gradient(from 0% 93% to 0% 100%, #a34313 0%, #903b12 100%),\n" +
-                "        #9d4024,\n" +
-                "        #d86e3a,\n" +
-                "        radial-gradient(center 50% 50%, radius 100%, #d86e3a, #c54e2c);\n" +
-                "    -fx-effect: dropshadow( gaussian , rgba(0,0,0,0.75) , 4,0,0,1 );\n" +
-                "    -fx-font-weight: bold;\n" +
-                "    -fx-font-size: 2em;";
         VBox leaderboardGroup = new VBox();
         Text text;
         Text leaderboardText = new Text("LEADERBOARD\n");
-        leaderboardText.setStyle(leaderboardStyle);
+        leaderboardText.setId("menu-text");
         leaderboardGroup.getChildren().add(leaderboardText);
         for (int i = 0; i < 10; i++) {
             text = new Text((float) windowsSize / 2, (float) 0, "#" + (i + 1) + ".\t\t" + score.getPoints().get(i) + "\n");
-            text.setStyle(textStyle);
+            text.setId("leaderboard-text");
             leaderboardGroup.getChildren().add(text);
         }
         Button menuButton = new Button("Menu");
-        menuButton.setStyle(menuButtonStyle);
-        menuButton.setOnMousePressed(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent mouseEvent) {
-                gameStatus(Main.GameStatus.MENU);
-            }
-        });
+        menuButton.setId("button");
+        menuButton.setOnMousePressed(mouseEvent -> gameStatus(Main.GameStatus.MENU));
         leaderboardGroup.getChildren().add(menuButton);
         leaderboardGroup.setMinWidth((float) windowsSize / 2);
         leaderboardGroup.setLayoutX((float) windowsSize / 2 - leaderboardGroup.getMinWidth() / 2);

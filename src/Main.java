@@ -32,6 +32,9 @@ public class Main extends Application implements GameStatusListener, DifficultyL
             primaryStage.setScene(scene);
             primaryStage.show();
             gc = canvas.getGraphicsContext2D();
+            String style = getClass().getResource("style.css").toExternalForm();
+            scene.getStylesheets().addAll(style);
+            root.getStylesheets().addAll(style);
             run(root, canvas, scene);
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -83,21 +86,13 @@ public class Main extends Application implements GameStatusListener, DifficultyL
         }.start();
     }
 
-    public void setGameStatus(GameStatus gameStatus) {
-        this.gameStatus = gameStatus;
-    }
-
-    public void setDifficulty(Difficulty difficulty) {
-        this.difficulty = difficulty;
-    }
-
     @Override
     public void gameStatusHandler(GameStatus gs) {
-        setGameStatus(gs);
+        this.gameStatus = gs;
     }
 
     @Override
     public void difficultyHandler(Difficulty difficulty) {
-        setDifficulty(difficulty);
+        this.difficulty = difficulty;
     }
 }

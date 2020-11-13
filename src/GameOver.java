@@ -17,28 +17,12 @@ public class GameOver {
     }
 
     public void drawGameOverScreen(Group root, int gameWindowSize) {
-        String gameOverStyle = "-fx-font-weight: bold;\n" + "-fx-font-size: 4em;";
         Text gameOver = new Text((float) gameWindowSize / 3, (float) gameWindowSize / 2, "GAME OVER!");
-        String buttonStyle = "-fx-padding: 15;\n" +
-                "    -fx-background-insets: 0,0 0 5 0, 0 0 6 0, 0 0 7 0;\n" +
-                "    -fx-background-radius: 10;\n" +
-                "    -fx-background-color: \n" +
-                "        linear-gradient(from 0% 93% to 0% 100%, #a34313 0%, #903b12 100%),\n" +
-                "        #9d4024,\n" +
-                "        #d86e3a,\n" +
-                "        radial-gradient(center 50% 50%, radius 100%, #d86e3a, #c54e2c);\n" +
-                "    -fx-font-weight: bold;\n" +
-                "    -fx-font-size: 2em;";
 
         Button menu = new Button("Menu");
-        menu.setOnMousePressed(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent mouseEvent) {
-                gameStatus(Main.GameStatus.MENU);
-            }
-        });
-        menu.setStyle(buttonStyle);
-        gameOver.setStyle(gameOverStyle);
+        menu.setOnMousePressed(mouseEvent -> gameStatus(Main.GameStatus.MENU));
+        menu.setId("button");
+        gameOver.setId("menu-text");
         VBox gameOverGroup = new VBox(100);
         gameOverGroup.getChildren().addAll(gameOver, menu);
         gameOverGroup.setMinWidth((float)gameWindowSize/3);

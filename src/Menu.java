@@ -4,9 +4,9 @@ import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.control.Button;
+import javafx.scene.control.Toggle;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
@@ -24,36 +24,12 @@ public class Menu {
     }
 
     public void createMenu(Group root, int windowsSize) {
-        String menuButtonStyle = "-fx-padding: 15;\n" +
-                "    -fx-background-insets: 0,0 0 5 0, 0 0 6 0, 0 0 7 0;\n" +
-                "    -fx-background-radius: 10;\n" +
-                "    -fx-background-color: \n" +
-                "        linear-gradient(from 0% 93% to 0% 100%, #a34313 0%, #903b12 100%),\n" +
-                "        #9d4024,\n" +
-                "        #d86e3a,\n" +
-                "        radial-gradient(center 50% 50%, radius 100%, #d86e3a, #c54e2c);\n" +
-                "    -fx-effect: dropshadow( gaussian , rgba(0,0,0,0.75) , 4,0,0,1 );\n" +
-                "    -fx-font-weight: bold;\n" +
-                "    -fx-font-size: 2em;";
-
-        String pressedButton = "-fx-padding: 15;\n" +
-                "    -fx-background-insets: 0,0 0 5 0, 0 0 6 0, 0 0 7 0;\n" +
-                "    -fx-background-radius: 10;\n" +
-                "    -fx-background-color: \n" +
-                "        linear-gradient(from 0% 93% to 0% 100%, #aaaaaa 0%, #903b12 100%),\n" +
-                "        #9d4024,\n" +
-                "        #d86e3a,\n" +
-                "        radial-gradient(center 50% 50%, radius 100%, #d86e3a, #c54e2c);\n" +
-                "    -fx-effect: dropshadow( gaussian , rgba(0,0,0,0.75) , 4,0,0,1 );\n" +
-                "    -fx-font-weight: bold;\n" +
-                "    -fx-font-size: 2em;";
-
-        String snakeTextStyle = "-fx-font-weight: bold;\n" + "-fx-font-size: 6em;";
-        String spaceTextStyle = "-fx-font-size: 1em;";
         Text snakeText = new Text((float) windowsSize / 3, (float) windowsSize / 2, "SNAKE");
         Text space = new Text(" ");
-        snakeText.setStyle(snakeTextStyle);
-        space.setStyle(spaceTextStyle);
+        snakeText.setId("snake-text-style");
+        space.setId("space");
+
+        ToggleGroup tg = new ToggleGroup();
 
         Button newGame = new Button("New Game");
         Button leaderboard = new Button("Leaderboard");
@@ -63,71 +39,41 @@ public class Menu {
         ToggleButton medium = new ToggleButton("Medium");
         ToggleButton hard = new ToggleButton("Hard");
 
-        newGame.setMinSize(200, 200);
+        easy.setSelected(true);
 
-        newGame.setStyle(menuButtonStyle);
-        leaderboard.setStyle(menuButtonStyle);
-        exit.setStyle(menuButtonStyle);
-
-        easy.setStyle(menuButtonStyle);
-        medium.setStyle(menuButtonStyle);
-        hard.setStyle(menuButtonStyle);
-
-        newGame.setOnMousePressed(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent mouseEvent) {
-                gameStatus(Main.GameStatus.NEWGAME);
-            }
-        });
-
-        leaderboard.setOnMousePressed(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent mouseEvent) {
-                gameStatus(Main.GameStatus.LEADERBOARD);
-            }
-        });
-
-        exit.setOnMousePressed(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent mouseEvent) {
-                System.exit(0);
-            }
-        });
-
-        easy.setOnMousePressed(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent mouseEvent) {
-                easy.setSelected(true);
-                medium.setSelected(false);
-                hard.setSelected(false);
-                difficulty(Main.Difficulty.EASY);
-            }
-        });
-
-        medium.setOnMousePressed(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent mouseEvent) {
-                easy.setSelected(false);
-                medium.setSelected(true);
-                hard.setSelected(false);
-                difficulty(Main.Difficulty.MEDIUM);
-            }
-        });
-
-        hard.setOnMousePressed(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent mouseEvent) {
-                easy.setSelected(false);
-                medium.setSelected(false);
-                hard.setSelected(true);
-                difficulty(Main.Difficulty.HARD);
-            }
-        });
-
-        ToggleGroup tg = new ToggleGroup();
         easy.setToggleGroup(tg);
         medium.setToggleGroup(tg);
         hard.setToggleGroup(tg);
+
+        tg.selectedToggleProperty().addListener((ov, toggle, new_toggle) -> {
+            System.out.println(tg.getSelectedToggle());
+            tg.getSelectedToggle().setSelected(true);
+            toggle.setSelected(true);
+            new_toggle.setSelected(true);
+            System.out.println(tg.getSelectedToggle());
+
+        });
+
+        newGame.setMinSize(200, 200);
+
+        newGame.setOnMousePressed(mouseEvent -> gameStatus(Main.GameStatus.NEWGAME));
+
+        leaderboard.setOnMousePressed(mouseEvent -> gameStatus(Main.GameStatus.LEADERBOARD));
+
+        exit.setOnMousePressed(mouseEvent -> System.exit(0));
+
+        easy.setOnMousePressed(mouseEvent -> difficulty(Main.Difficulty.EASY));
+
+        medium.setOnMousePressed(mouseEvent -> difficulty(Main.Difficulty.MEDIUM));
+
+        hard.setOnMousePressed(mouseEvent -> difficulty(Main.Difficulty.HARD));
+
+        newGame.setId("button");
+        leaderboard.setId("button");
+        exit.setId("button");
+        /*easy.setId("button");
+        medium.setId("button");
+        hard.setId("button");*/
 
         HBox difficultyBP = new HBox(25);
         difficultyBP.setAlignment(Pos.CENTER);
