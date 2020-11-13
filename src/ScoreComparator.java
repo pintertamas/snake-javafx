@@ -1,8 +1,7 @@
 import java.util.Comparator;
 
-public class ScoreComparator implements Comparator<Integer> {
-    @Override
-    public int compare(Integer i1, Integer i2) {
-        return Integer.compare(i2, i1);
+class ScoreComparator implements Comparator<Score> {
+    public int compare(Score s1,Score s2){
+        return s2.compareTo(s1);
     }
 }

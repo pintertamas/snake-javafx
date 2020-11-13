@@ -1,6 +1,6 @@
 public class DisappearingFood extends Food {
-    long spawnTime;
-    long lifetime;
+    final long spawnTime;
+    final long lifetime;
 
     public DisappearingFood(Screen screen) {
         super(screen);

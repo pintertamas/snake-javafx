@@ -1,12 +1,6 @@
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
-import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.control.Button;
-import javafx.scene.control.Toggle;
-import javafx.scene.control.ToggleButton;
-import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
@@ -23,36 +17,27 @@ public class Menu {
         this.difficultyListeners = new ArrayList<>();
     }
 
-    public void createMenu(Group root, int windowsSize) {
+    public void createMenu(Group root, int windowsSize, Main.Difficulty difficulty) {
         Text snakeText = new Text((float) windowsSize / 3, (float) windowsSize / 2, "SNAKE");
         Text space = new Text(" ");
         snakeText.setId("snake-text");
         space.setId("space");
 
-        ToggleGroup tg = new ToggleGroup();
-
         Button newGame = new Button("New Game");
         Button leaderboard = new Button("Leaderboard");
         Button exit = new Button("Exit");
 
-        ToggleButton easy = new ToggleButton("Easy");
-        ToggleButton medium = new ToggleButton("Medium");
-        ToggleButton hard = new ToggleButton("Hard");
+        Button easy = new Button("Easy");
+        Button medium = new Button("Medium");
+        Button hard = new Button("Hard");
 
-        //easy.setSelected(true);
+        newGame.setId("button");
+        leaderboard.setId("button");
+        exit.setId("button");
 
-        easy.setToggleGroup(tg);
-        medium.setToggleGroup(tg);
-        hard.setToggleGroup(tg);
-
-        tg.selectedToggleProperty().addListener((ov, toggle, new_toggle) -> {
-            System.out.println(tg.getSelectedToggle());
-            tg.getSelectedToggle().setSelected(true);
-            toggle.setSelected(true);
-            new_toggle.setSelected(true);
-            System.out.println(tg.getSelectedToggle());
-
-        });
+        easy.setId("button");
+        medium.setId("button");
+        hard.setId("button");
 
         newGame.setMinSize(200, 200);
 
@@ -68,12 +53,9 @@ public class Menu {
 
         hard.setOnMousePressed(mouseEvent -> difficulty(Main.Difficulty.HARD));
 
-        newGame.setId("button");
-        leaderboard.setId("button");
-        exit.setId("button");
-        /*easy.setId("button");
-        medium.setId("button");
-        hard.setId("button");*/
+        easy.setId(difficulty == Main.Difficulty.EASY ? "button-selected" : "button");
+        medium.setId(difficulty == Main.Difficulty.MEDIUM ? "button-selected" : "button");
+        hard.setId(difficulty == Main.Difficulty.HARD ? "button-selected" : "button");
 
         HBox difficultyBP = new HBox(25);
         difficultyBP.setAlignment(Pos.CENTER);
@@ -83,7 +65,7 @@ public class Menu {
         menuGroup.getChildren().addAll(snakeText, space, newGame, difficultyBP, leaderboard, exit);
         menuGroup.setMinWidth((float) windowsSize / 2);
         menuGroup.setLayoutX((float) windowsSize / 2 - menuGroup.getMinWidth() / 2);
-        menuGroup.setLayoutY((float) windowsSize / 7);
+        menuGroup.setLayoutY((float) windowsSize / 10);
         menuGroup.setAlignment(Pos.CENTER);
         root.getChildren().addAll(menuGroup);
     }

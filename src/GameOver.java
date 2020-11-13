@@ -1,9 +1,6 @@
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.control.Button;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import java.util.ArrayList;
@@ -20,7 +17,7 @@ public class GameOver {
         Text gameOver = new Text((float) gameWindowSize / 3, (float) gameWindowSize / 2, "GAME OVER!");
 
         Button menu = new Button("Menu");
-        menu.setOnMousePressed(mouseEvent -> gameStatus(Main.GameStatus.MENU));
+        menu.setOnMousePressed(mouseEvent -> gameStatus());
         menu.setId("button");
         gameOver.setId("menu-text");
         VBox gameOverGroup = new VBox(100);
@@ -36,8 +33,8 @@ public class GameOver {
         gameStatusListeners.add(gsl);
     }
 
-    private void gameStatus(Main.GameStatus gs) {
+    private void gameStatus() {
         for (GameStatusListener gol : gameStatusListeners)
-            gol.gameStatusHandler(gs);
+            gol.gameStatusHandler(Main.GameStatus.MENU);
     }
 }

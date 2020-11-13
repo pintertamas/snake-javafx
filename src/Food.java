@@ -5,15 +5,7 @@ public class Food extends DrawableUnit {
     private int red;
     private int green;
     private int blue;
-    protected Screen screen;
-
-    public Food(Screen screen, int posX, int posY, int r, int g, int b) {
-        super(posX, posY);
-        this.red = r;
-        this.green = g;
-        this.blue = b;
-        this.screen = screen;
-    }
+    protected final Screen screen;
 
     public Food(Screen screen) {
         super(-40, -40);

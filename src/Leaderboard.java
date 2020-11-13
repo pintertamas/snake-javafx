@@ -1,8 +1,6 @@
-import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.control.Button;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 
@@ -38,13 +36,13 @@ public class Leaderboard {
         }
         else {
             resetLeaderboard();
-            saveLeaderboard(false, 0);
+            saveLeaderboard(false, 0, "-");
         }
     }
 
-    public void saveLeaderboard(boolean saved, int newScore) {
+    public void saveLeaderboard(boolean saved, int newScore, String difficulty) {
         if (!saved) {
-            updateScores(newScore);
+            updateScores(newScore, difficulty);
             try {
                 FileOutputStream fileOut =
                         new FileOutputStream("leaderboard.ser");
@@ -60,7 +58,7 @@ public class Leaderboard {
 
     public void resetLeaderboard() {
         for (int i = 0; i < 10; i++)
-            score.addPoint(0);
+            score.addPoint(0, "-");
     }
 
     public void draw(Group root, int windowsSize) {
@@ -70,13 +68,13 @@ public class Leaderboard {
         leaderboardText.setId("menu-text");
         leaderboardGroup.getChildren().add(leaderboardText);
         for (int i = 0; i < 10; i++) {
-            text = new Text((float) windowsSize / 2, (float) 0, "#" + (i + 1) + ".\t\t" + score.getPoints().get(i) + "\n");
+            text = new Text((float) windowsSize / 2, (float) 0, "#" + (i + 1) + ".\t\t" + score.getPoints().get(i) + " - " + score.getDifficulty().get(i) + "\n");
             text.setId("leaderboard-text");
             leaderboardGroup.getChildren().add(text);
         }
         Button menuButton = new Button("Menu");
         menuButton.setId("button");
-        menuButton.setOnMousePressed(mouseEvent -> gameStatus(Main.GameStatus.MENU));
+        menuButton.setOnMousePressed(mouseEvent -> gameStatus());
         leaderboardGroup.getChildren().add(menuButton);
         leaderboardGroup.setMinWidth((float) windowsSize / 2);
         leaderboardGroup.setLayoutX((float) windowsSize / 2 - leaderboardGroup.getMinWidth() / 2);
@@ -85,20 +83,21 @@ public class Leaderboard {
         root.getChildren().add(leaderboardGroup);
     }
 
-    private void updateScores(int newScore) {
-        score.getPoints().sort(new ScoreComparator());
-        if (score.getPoints().get(score.getPoints().size() - 1) < newScore)
+    private void updateScores(int newScore, String difficulty) {
+        //score.sort();
+        if (score.getPoints().get(score.getPoints().size() - 1) < newScore) {
             score.getPoints().set(score.getPoints().size() - 1, newScore);
-        score.getPoints().sort(new ScoreComparator());
+
+        }
+        //score.sort();
     }
 
     public void registerGameOverListener(GameStatusListener gsl) {
         gameStatusListeners.add(gsl);
     }
 
-    private void gameStatus(Main.GameStatus gs) {
+    private void gameStatus() {
         for (GameStatusListener gsl : gameStatusListeners)
-            gsl.gameStatusHandler(gs);
+            gsl.gameStatusHandler(Main.GameStatus.MENU);
     }
 }
-

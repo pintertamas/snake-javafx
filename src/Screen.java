@@ -68,7 +68,7 @@ public class Screen {
                 snake.head().getPosX() > windowSize ||
                 snake.head().getPosY() < 0 ||
                 snake.head().getPosY() > windowSize)
-            gameStatus(Main.GameStatus.GAMEOVER);
+            gameStatus();
     }
 
     public void checkSelfCollision() {
@@ -77,7 +77,7 @@ public class Screen {
                 for (int j = i + 1; j < snake.getDrawableUnits().size() - i; j++)
                     if (snake.getDrawableUnits().get(i).getPosX() == snake.getDrawableUnits().get(j).getPosX() &&
                             snake.getDrawableUnits().get(i).getPosY() == snake.getDrawableUnits().get(j).getPosY()) {
-                        gameStatus(Main.GameStatus.GAMEOVER);
+                        gameStatus();
                         break;
                     }
     }
@@ -178,8 +178,8 @@ public class Screen {
         gameStatusListeners.add(gsl);
     }
 
-    private void gameStatus(Main.GameStatus gs) {
+    private void gameStatus() {
         for (GameStatusListener gol : gameStatusListeners)
-            gol.gameStatusHandler(gs);
+            gol.gameStatusHandler(Main.GameStatus.GAMEOVER);
     }
 }

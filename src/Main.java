@@ -59,7 +59,7 @@ public class Main extends Application implements GameStatusListener, DifficultyL
                     case MENU -> {
                         screen.resetScreen(root, canvas);
                         screen.drawBackground(gc);
-                        menu.createMenu(root, gameWindowSize);
+                        menu.createMenu(root, gameWindowSize, difficulty);
                     }
                     case GAME -> {
                         Text score = screen.drawScore(gc);

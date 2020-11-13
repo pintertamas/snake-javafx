@@ -70,23 +70,23 @@ public class Snake {
             switch (direction) {
                 case RIGHT -> {
                     if (!(drawableUnits.get(0).getPosX() + 40 < windowSize))
-                        gameStatus(Main.GameStatus.GAMEOVER);
+                        gameStatus();
                     else drawableUnits.get(0).setPosX(drawableUnits.get(0).getPosX() + 40);
                 }
                 case LEFT -> {
                     if (!(drawableUnits.get(0).getPosX() - 40 >= 0))
-                        gameStatus(Main.GameStatus.GAMEOVER);
+                        gameStatus();
                     else drawableUnits.get(0).setPosX(drawableUnits.get(0).getPosX() - 40);
                 }
                 case UP -> {
                     if (!(drawableUnits.get(0).getPosY() - 40 >= 0))
-                        gameStatus(Main.GameStatus.GAMEOVER);
+                        gameStatus();
                     else drawableUnits.get(0).setPosY(drawableUnits.get(0).getPosY() - 40);
 
                 }
                 case DOWN -> {
                     if (!(drawableUnits.get(0).getPosY() + 40 < windowSize))
-                        gameStatus(Main.GameStatus.GAMEOVER);
+                        gameStatus();
                     else drawableUnits.get(0).setPosY(drawableUnits.get(0).getPosY() + 40);
                 }
             }
@@ -110,8 +110,8 @@ public class Snake {
         gameOverListeners.add(gol);
     }
 
-    private void gameStatus(Main.GameStatus gs) {
+    private void gameStatus() {
         for (GameStatusListener gol : gameOverListeners)
-            gol.gameStatusHandler(gs);
+            gol.gameStatusHandler(Main.GameStatus.GAMEOVER);
     }
 }

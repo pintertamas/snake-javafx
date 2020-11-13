@@ -1,4 +1,4 @@
-#button, .toggle-button {
+#button {
     -fx-padding: 8 15 15 15;
     -fx-background-insets: 0, 0 0 5 0, 0 0 6 0, 0 0 7 0;
     -fx-background-radius: 8;
@@ -11,9 +11,17 @@
     -fx-font-size: 2em;
 }
 
-.toggle-button:hover, .toggle-button:selected {
-    -fx-background-color: #ffffff;
-    -fx-font-size: 5em;
+#button-selected {
+    -fx-padding: 10 15 15 15;
+    -fx-background-insets: 1, 0 0 3 0, 0 0 4 0, 0 0 5 0;
+    -fx-background-radius: 8;
+    -fx-background-color: linear-gradient(from 0% 93% to 0% 100%, #a34313 0%, #901212 100%),
+    #9d4024,
+    #d86e3a,
+    radial-gradient(center 50% 50%, radius 100%, #d86e3a, #c54e2c);
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.75), 4, 0, 0, 1);
+    -fx-font-weight: bold;
+    -fx-font-size: 1.8em;
 }
 
 #menu-text {
@@ -35,6 +43,3 @@
     -fx-font-size: 1em;
 }
 
-.text, #menu-text, #snake-text, #leaderboard-text {
-    -fx-font-family: "Comic Sans MS";
-}
