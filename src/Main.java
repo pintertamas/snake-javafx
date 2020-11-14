@@ -77,7 +77,7 @@ public class Main extends Application implements GameStatusListener, DifficultyL
                         leaderboard.draw(root, gameWindowSize);
                     }
                     case GAMEOVER -> {
-                        leaderboard.saveLeaderboard(savedToFile, screen.getSnake().getScore());
+                        leaderboard.saveLeaderboard(savedToFile, screen.getSnake().getScore(), difficulty.name());
                         savedToFile = true;
                         gameOver.drawGameOverScreen(root, gameWindowSize);
                     }

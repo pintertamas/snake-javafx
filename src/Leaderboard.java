@@ -9,11 +9,11 @@ import java.util.ArrayList;
 
 public class Leaderboard {
 
-    private Score score;
+    private Scores scores;
     private final ArrayList<GameStatusListener> gameStatusListeners;
 
     public Leaderboard() {
-        score = new Score();
+        scores = new Scores();
         gameStatusListeners = new ArrayList<>();
         resetLeaderboard();
         loadLeaderboard();
@@ -23,11 +23,11 @@ public class Leaderboard {
         File file = new File("leaderboard.ser");
         if (file.exists()) {
             try {
-                Score s;
+                Scores s;
                 FileInputStream fileIn = new FileInputStream("leaderboard.ser");
                 ObjectInputStream in = new ObjectInputStream(fileIn);
-                s = (Score) in.readObject();
-                this.score = s;
+                s = (Scores) in.readObject();
+                this.scores = s;
                 fileIn.close();
                 in.close();
             } catch (IOException | ClassNotFoundException ex) {
@@ -47,7 +47,7 @@ public class Leaderboard {
                 FileOutputStream fileOut =
                         new FileOutputStream("leaderboard.ser");
                 ObjectOutputStream out = new ObjectOutputStream(fileOut);
-                out.writeObject(score);
+                out.writeObject(scores);
                 fileOut.close();
                 out.close();
             } catch (IOException i) {
@@ -58,7 +58,7 @@ public class Leaderboard {
 
     public void resetLeaderboard() {
         for (int i = 0; i < 10; i++)
-            score.addPoint(0, "-");
+            scores.addScore(0, "-");
     }
 
     public void draw(Group root, int windowsSize) {
@@ -68,7 +68,7 @@ public class Leaderboard {
         leaderboardText.setId("menu-text");
         leaderboardGroup.getChildren().add(leaderboardText);
         for (int i = 0; i < 10; i++) {
-            text = new Text((float) windowsSize / 2, (float) 0, "#" + (i + 1) + ".\t\t" + score.getPoints().get(i) + " - " + score.getDifficulty().get(i) + "\n");
+            text = new Text((float) windowsSize / 2, (float) 0, "#" + (i + 1) + ".\t\t" + scores.getScores().get(i).getPoint() + " (" + scores.getScores().get(i).getDifficulty() + ")\n");
             text.setId("leaderboard-text");
             leaderboardGroup.getChildren().add(text);
         }
@@ -84,12 +84,12 @@ public class Leaderboard {
     }
 
     private void updateScores(int newScore, String difficulty) {
-        //score.sort();
-        if (score.getPoints().get(score.getPoints().size() - 1) < newScore) {
-            score.getPoints().set(score.getPoints().size() - 1, newScore);
-
+        //Collections.sort(scores, Scores.scoreComparator());
+        scores.getScores().sort(new ScoreComparator());
+        if (scores.getScores().get(9).getPoint() < newScore) {
+            scores.getScores().set(9, new SingleScore(newScore, difficulty));
         }
-        //score.sort();
+        scores.getScores().sort(new ScoreComparator());
     }
 
     public void registerGameOverListener(GameStatusListener gsl) {
