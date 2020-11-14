@@ -1,4 +1,5 @@
 #button {
+    -fx-font-family: "Comic Sans MS";
     -fx-padding: 8 15 15 15;
     -fx-background-insets: 0, 0 0 5 0, 0 0 6 0, 0 0 7 0;
     -fx-background-radius: 8;
@@ -12,6 +13,7 @@
 }
 
 #button-selected {
+    -fx-font-family: "Comic Sans MS";
     -fx-padding: 10 15 15 15;
     -fx-background-insets: 1, 0 0 3 0, 0 0 4 0, 0 0 5 0;
     -fx-background-radius: 8;
@@ -25,21 +27,24 @@
 }
 
 #menu-text {
+    -fx-font-family: "Comic Sans MS";
     -fx-font-weight: bold;
     -fx-font-size: 4em;
 }
 
 #leaderboard-text {
+    -fx-font-family: "Comic Sans MS";
     -fx-font-weight: bold;
     -fx-font-size: 1.5em;
 }
 
 #snake-text {
+    -fx-font-family: "Comic Sans MS";
     -fx-font-weight: bold;
     -fx-font-size: 6em;
 }
 
 #space {
+    -fx-font-family: "Comic Sans MS";
     -fx-font-size: 1em;
 }
-
