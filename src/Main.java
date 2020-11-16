@@ -86,7 +86,7 @@ public class Main extends Application implements GameStatusListener, DifficultyL
 
         new AnimationTimer() {
             /**
-             * The displayed content will depend on what is the current value of the gameStatus state machine.
+             * The displayed content will depend on what is the current value of the gameStatus attribute.
              * @param currTime I don't use it, but the AnimationTimer handle function needs it there.
              */
             public void handle(long currTime) {
