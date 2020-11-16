@@ -98,7 +98,7 @@ public class Main extends Application implements GameStatusListener, DifficultyL
                     }
                     case GAME -> {
                         Text score = screen.drawScore(gc);
-                        screen.updateScreen(root, canvas, difficulty, gameStatus, gc);
+                        screen.updateScreen(root, canvas, difficulty, gc);
                         root.getChildren().add(score);
                     }
                     case NEWGAME -> {

@@ -54,10 +54,9 @@ public class Screen {
      * @param root       the group that will contain the screen.
      * @param canvas     we'll draw objects on this canvas using the GraphicsContext
      * @param difficulty the current difficulty
-     * @param gameStatus the current game status
      * @param gc         the GraphicsContext
      */
-    public void updateScreen(Group root, Canvas canvas, Main.Difficulty difficulty, Main.GameStatus gameStatus, GraphicsContext gc) {
+    public void updateScreen(Group root, Canvas canvas, Main.Difficulty difficulty, GraphicsContext gc) {
         resetScreen(root, canvas);
         drawBackground(gc);
         generateFood(difficulty, gc);
@@ -227,7 +226,7 @@ public class Screen {
     /**
      * Snake getter
      *
-     * @return scake
+     * @return snake
      */
     public Snake getSnake() {
         return snake;
