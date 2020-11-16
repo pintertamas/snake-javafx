@@ -6,12 +6,31 @@ import javafx.scene.canvas.*;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
+/**
+ * <h1>This is a Snake GUI application.</h1>
+ * *
+ * * @author Pintér Tamás
+ * * @since 2020.11.01
+ * * The github repository for this project is here: <a href="#{@link}">{@link "https://github.com/pintertamas/snake-javafx"}</a>
+ */
 public class Main extends Application implements GameStatusListener, DifficultyListener {
 
+    /**
+     * Initialization of the variables that needs to be set up before the game starts.
+     */
     private final int gameWindowSize = 800;
     private GraphicsContext gc;
+
+    /**
+     * The game has 3 different modes.
+     * EASY mode spawns single non-disappearing food.
+     * MEDIUM will spawn 2 food and they might disappear after a while.
+     * HARD mode only spawns disappearing food.
+     */
     public enum Difficulty {EASY, MEDIUM, HARD}
+
     public enum GameStatus {MENU, GAME, NEWGAME, LEADERBOARD, GAMEOVER}
+
     private Difficulty difficulty = Difficulty.EASY;
     private GameStatus gameStatus = GameStatus.MENU;
     private boolean savedToFile = false;
@@ -20,6 +39,11 @@ public class Main extends Application implements GameStatusListener, DifficultyL
         launch(args);
     }
 
+    /**
+     * This function creates the windows for the user, sets up its properties, and calls run() which is the game loop function.
+     *
+     * @param primaryStage it is the primary window that will be shown to the user.
+     */
     @Override
     public void start(Stage primaryStage) {
         try {
@@ -41,6 +65,13 @@ public class Main extends Application implements GameStatusListener, DifficultyL
         }
     }
 
+    /**
+     * This function creates the classes that will be used during the game, then creates a loop that calls the functions of these classes (and animates them).
+     *
+     * @param root   It's a group of objects.
+     * @param canvas Canvas is an image that can be drawn on using a set of graphics commands provided by a GraphicsContext
+     * @param scene  The contents of the scene graph will be clipped by the scene's width and height and changes to the scene's size will not alter the layout of the scene graph.
+     */
     private void run(Group root, Canvas canvas, Scene scene) {
         Screen screen = new Screen(gameWindowSize, scene, gc);
         Menu menu = new Menu();
@@ -48,12 +79,16 @@ public class Main extends Application implements GameStatusListener, DifficultyL
         GameOver gameOver = new GameOver();
         menu.registerGameOverListener(this);
         menu.registerDifficultyListener(this);
-        screen.registerGameStatusListener(this);
+        screen.registerGameOverListener(this);
         screen.getSnake().registerGameOverListener(this);
-        leaderboard.registerGameOverListener(this);
+        leaderboard.registerGameMenuListener(this);
         gameOver.registerGameStatusListener(this);
 
         new AnimationTimer() {
+            /**
+             * The displayed content will depend on what is the current value of the gameStatus state machine.
+             * @param currTime I don't use it, but the AnimationTimer handle function needs it there.
+             */
             public void handle(long currTime) {
                 switch (gameStatus) {
                     case MENU -> {
@@ -86,11 +121,21 @@ public class Main extends Application implements GameStatusListener, DifficultyL
         }.start();
     }
 
+    /**
+     * This function handles the gameStatus changes. When a listener wants to change the state of the game, this function handles it here.
+     *
+     * @param gs gameState will be set to this.
+     */
     @Override
     public void gameStatusHandler(GameStatus gs) {
         this.gameStatus = gs;
     }
 
+    /**
+     * This function handles the difficulty changes. When a listener wants to change the difficulty, this function handles it here.
+     *
+     * @param difficulty difficulty will be set to this.
+     */
     @Override
     public void difficultyHandler(Difficulty difficulty) {
         this.difficulty = difficulty;

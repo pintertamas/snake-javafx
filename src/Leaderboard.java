@@ -8,18 +8,28 @@ import javafx.scene.text.Text;
 import java.io.*;
 import java.util.ArrayList;
 
+/**
+ * This class represents the leaderboard.
+ * It defines what's on the leaderboard and how the leaderboard looks like.
+ */
 public class Leaderboard {
 
     private Scores scores;
-    private final ArrayList<GameStatusListener> gameStatusListeners;
+    private final ArrayList<GameStatusListener> gameMenuListeners;
 
+    /**
+     * Constructor that creates the scores, the listeners, and calls the essential functions.
+     */
     public Leaderboard() {
         scores = new Scores();
-        gameStatusListeners = new ArrayList<>();
+        gameMenuListeners = new ArrayList<>();
         resetLeaderboard();
         loadLeaderboard();
     }
 
+    /**
+     * Loads the leaderboard from a .ser file.
+     */
     public void loadLeaderboard() {
         File file = new File("leaderboard.ser");
         if (file.exists()) {
@@ -40,6 +50,13 @@ public class Leaderboard {
         }
     }
 
+    /**
+     * Updates the scores, then saves the data to a .ser file.
+     *
+     * @param saved      we don't want to save more than once.
+     * @param newScore   this is the current score that might appear on the leaderboard.
+     * @param difficulty the current difficulty that might appear on the leaderboard.
+     */
     public void saveLeaderboard(boolean saved, int newScore, String difficulty) {
         if (!saved) {
             updateScores(newScore, difficulty);
@@ -56,11 +73,20 @@ public class Leaderboard {
         }
     }
 
+    /**
+     * It resets the scores on the leaderboard to 0,"X".
+     */
     public void resetLeaderboard() {
         for (int i = 0; i < 10; i++)
             scores.addScore(0, "X");
     }
 
+    /**
+     * Draws the leaderboard on the screen using the root and the windowSize
+     *
+     * @param root        the group where we'll add the leaderboard
+     * @param windowsSize the current size of the window
+     */
     public void draw(Group root, int windowsSize) {
         VBox leaderboardGroup = new VBox(10);
         Text scoreText;
@@ -90,7 +116,7 @@ public class Leaderboard {
 
         Button menuButton = new Button("Menu");
         menuButton.setId("button");
-        menuButton.setOnMousePressed(mouseEvent -> gameStatus());
+        menuButton.setOnMousePressed(mouseEvent -> gameMenu());
 
         leaderboardGroup.getChildren().add(menuButton);
         leaderboardGroup.setMinWidth((float) windowsSize / 2);
@@ -101,6 +127,13 @@ public class Leaderboard {
         root.getChildren().add(leaderboardGroup);
     }
 
+    /**
+     * Sorts the scores with the ScoreComparator
+     * Replaces the worst score with newScore if it's higher than that.
+     *
+     * @param newScore   the score that might appear on the leaderboard
+     * @param difficulty the difficulty that might appear on the leaderboard
+     */
     private void updateScores(int newScore, String difficulty) {
         scores.getScores().sort(new ScoreComparator());
         if (scores.getScores().get(9).getPoint() < newScore) {
@@ -109,12 +142,20 @@ public class Leaderboard {
         scores.getScores().sort(new ScoreComparator());
     }
 
-    public void registerGameOverListener(GameStatusListener gsl) {
-        gameStatusListeners.add(gsl);
+    /**
+     * Adds the parameter to the gameMenuListeners
+     *
+     * @param gsl this is the GameStatusListener that we want to add to the listeners
+     */
+    public void registerGameMenuListener(GameStatusListener gsl) {
+        gameMenuListeners.add(gsl);
     }
 
-    private void gameStatus() {
-        for (GameStatusListener gsl : gameStatusListeners)
+    /**
+     * Calls the gameStatusHandler function on the listeners with the MENU parameter.
+     */
+    private void gameMenu() {
+        for (GameStatusListener gsl : gameMenuListeners)
             gsl.gameStatusHandler(Main.GameStatus.MENU);
     }
 }

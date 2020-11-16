@@ -8,20 +8,35 @@ import javafx.scene.text.Text;
 import java.util.ArrayList;
 import java.util.Random;
 
+/**
+ * This class represents the screen. It controls the game.
+ */
 public class Screen {
     private static int windowSize;
     private final int cellCount = 20;
     private Snake snake;
     private ArrayList<Food> foods;
-    private final ArrayList<GameStatusListener> gameStatusListeners;
+    private final ArrayList<GameStatusListener> gameOverListeners;
 
+    /**
+     * Constructor that sets up the screen.
+     *
+     * @param windowSize the current size of the window
+     * @param scene      we want to add objects to this screen
+     * @param gc         the GraphicsContext that helps us draw objects on the screen
+     */
     public Screen(int windowSize, Scene scene, GraphicsContext gc) {
         Screen.windowSize = windowSize;
         this.snake = new Snake(new DrawableUnit(360, 400), windowSize, scene, gc);
         this.foods = new ArrayList<>();
-        this.gameStatusListeners = new ArrayList<>();
+        this.gameOverListeners = new ArrayList<>();
     }
 
+    /**
+     * Initializes the foods based on the difficulty. (the number of them)
+     *
+     * @param difficulty the current difficulty
+     */
     public void initFood(Main.Difficulty difficulty) {
         foods.clear();
         foods = new ArrayList<>();
@@ -32,12 +47,22 @@ public class Screen {
         }
     }
 
+    /**
+     * Updates the content on the screen.
+     * Calls the functions and waits for a tenth of a second
+     *
+     * @param root       the group that will contain the screen.
+     * @param canvas     we'll draw objects on this canvas using the GraphicsContext
+     * @param difficulty the current difficulty
+     * @param gameStatus the current game status
+     * @param gc         the GraphicsContext
+     */
     public void updateScreen(Group root, Canvas canvas, Main.Difficulty difficulty, Main.GameStatus gameStatus, GraphicsContext gc) {
         resetScreen(root, canvas);
         drawBackground(gc);
         generateFood(difficulty, gc);
         snake.changeDirection();
-        snake.moveSnake(gameStatus);
+        snake.moveSnake();
         snake.drawSnake(gc);
         drawScore(gc);
         checkFoodCollision();
@@ -50,11 +75,21 @@ public class Screen {
         }
     }
 
+    /**
+     * Resets the screen by clearing everything from it.
+     *
+     * @param root   the group that we want to clear
+     * @param canvas the canvas that we want to put back into the group
+     */
     public void resetScreen(Group root, Canvas canvas) {
         root.getChildren().clear();
         root.getChildren().add(canvas);
     }
 
+    /**
+     * Checks whether the snake ate a food
+     * If the snake eats a food then the food's x position sets to -1, and the snake becomes longer
+     */
     public void checkFoodCollision() {
         for (Food food : foods)
             if (snake.head().getPosX() == food.getPosX() && snake.head().getPosY() == food.getPosY()) {
@@ -63,25 +98,36 @@ public class Screen {
             }
     }
 
+    /**
+     * If the snake hits a wall, the gameOver() function gets called.
+     */
     public void checkWallCollision() {
         if (snake.head().getPosX() < 0 ||
                 snake.head().getPosX() > windowSize ||
                 snake.head().getPosY() < 0 ||
                 snake.head().getPosY() > windowSize)
-            gameStatus();
+            gameOver();
     }
 
+    /**
+     * If the snake eats it's tail, the gameOver() function gets called
+     */
     public void checkSelfCollision() {
         if (snake.getDrawableUnits().size() > 1)
             for (int i = 0; i < snake.getDrawableUnits().size(); i++)
                 for (int j = i + 1; j < snake.getDrawableUnits().size() - i; j++)
                     if (snake.getDrawableUnits().get(i).getPosX() == snake.getDrawableUnits().get(j).getPosX() &&
                             snake.getDrawableUnits().get(i).getPosY() == snake.getDrawableUnits().get(j).getPosY()) {
-                        gameStatus();
+                        gameOver();
                         break;
                     }
     }
 
+    /**
+     * Draws the background of the screen
+     *
+     * @param gc the GraphicsContext
+     */
     public void drawBackground(GraphicsContext gc) {
         for (int i = 0; i < cellCount; i++) {
             for (int j = 0; j < cellCount; j++) {
@@ -96,6 +142,12 @@ public class Screen {
         }
     }
 
+    /**
+     * Draws the score on the screen
+     *
+     * @param gc the GraphicsContext
+     * @return a Text which contains the score that we want to display
+     */
     public Text drawScore(GraphicsContext gc) {
         gc.setFill(Color.rgb(0, 0, 0));
         Text scoreText = new Text("Score: " + getSnake().getScore());
@@ -106,6 +158,14 @@ public class Screen {
         return scoreText;
     }
 
+    /**
+     * Generates a food based on the difficulty
+     * Updates the foods' position
+     * Draws the foods
+     *
+     * @param difficulty the current difficulty
+     * @param gc         the GraphicsContext
+     */
     public void generateFood(Main.Difficulty difficulty, GraphicsContext gc) {
         if (foods.size() != getFoodCount(difficulty))
             initFood(difficulty);
@@ -113,9 +173,15 @@ public class Screen {
             food.update(difficulty);
         }
         for (Food food : foods)
-            food.drawFood(food, gc);
+            food.drawFood(gc);
     }
 
+    /**
+     * Relocates the food on the screen based on the difficulty.
+     *
+     * @param food       this food will be relocated
+     * @param difficulty this is the current difficulty
+     */
     public void relocateFood(Food food, Main.Difficulty difficulty) {
         Random rand = new Random();
         int low = 0;
@@ -158,28 +224,57 @@ public class Screen {
         }
     }
 
-    public void setSnake(Snake snake) {
-        this.snake = snake;
-    }
-
-    public Screen getScreen() {
-        return this;
-    }
-
-    public int getFoodCount(Main.Difficulty difficulty) {
-        return difficulty.ordinal() + 1;
-    }
-
+    /**
+     * Snake getter
+     *
+     * @return scake
+     */
     public Snake getSnake() {
         return snake;
     }
 
-    public void registerGameStatusListener(GameStatusListener gsl) {
-        gameStatusListeners.add(gsl);
+    /**
+     * Snake setter
+     *
+     * @param snake this will be the snake
+     */
+    public void setSnake(Snake snake) {
+        this.snake = snake;
     }
 
-    private void gameStatus() {
-        for (GameStatusListener gol : gameStatusListeners)
+    /**
+     * Screen getter
+     *
+     * @return screen
+     */
+    public Screen getScreen() {
+        return this;
+    }
+
+    /**
+     * Food count getter based on the difficulty
+     *
+     * @param difficulty the current difficulty
+     * @return the amount of food we want to display on the screen
+     */
+    public int getFoodCount(Main.Difficulty difficulty) {
+        return difficulty.ordinal() + 1;
+    }
+
+    /**
+     * Adds the parameter to the gameOverListeners
+     *
+     * @param gol this is the GameStatusListener that we want to add to the listeners
+     */
+    public void registerGameOverListener(GameStatusListener gol) {
+        gameOverListeners.add(gol);
+    }
+
+    /**
+     * Calls the gameStatusHandler function on the listeners with the GAMEOVER parameter.
+     */
+    private void gameOver() {
+        for (GameStatusListener gol : gameOverListeners)
             gol.gameStatusHandler(Main.GameStatus.GAMEOVER);
     }
 }
