@@ -48,10 +48,6 @@ public class Menu {
         leaderboard.setId("button");
         exit.setId("button");
 
-        easy.setId("button");
-        medium.setId("button");
-        hard.setId("button");
-
         newGame.setMinSize(200, 200);
 
         newGame.setOnMousePressed(mouseEvent -> gameStatus(Main.GameStatus.NEWGAME));

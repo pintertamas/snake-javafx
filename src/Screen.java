@@ -87,25 +87,52 @@ public class Screen {
 
     /**
      * Checks whether the snake ate a food
-     * If the snake eats a food then the food's x position sets to -1, and the snake becomes longer
+     * @param food the food that might got eaten by the snake
+     * @return whether the snake ate a food or not
+     */
+    public boolean isFoodCollision(Food food) {
+        return (snake.head().getPosX() == food.getPosX() && snake.head().getPosY() == food.getPosY());
+    }
+
+    /**
+     * Handles snake-food collisions
      */
     public void checkFoodCollision() {
         for (Food food : foods)
-            if (snake.head().getPosX() == food.getPosX() && snake.head().getPosY() == food.getPosY()) {
+            if (isFoodCollision(food)) {
                 food.setPosX(-1);
                 snake.addDrawableUnit(new DrawableUnit(0, 0));
             }
     }
 
     /**
-     * If the snake hits a wall, the gameOver() function gets called.
+     * Checks wall-snake collision
+     * @return whether the snake bumped into the wall
      */
-    public void checkWallCollision() {
-        if (snake.head().getPosX() < 0 ||
+    public boolean isWallCollision() {
+        return (snake.head().getPosX() < 0 ||
                 snake.head().getPosX() > windowSize ||
                 snake.head().getPosY() < 0 ||
-                snake.head().getPosY() > windowSize)
+                snake.head().getPosY() > windowSize);
+    }
+
+    /**
+     * If the snake hits a wall, the gameOver() function gets called
+     */
+    public void checkWallCollision() {
+        if (isWallCollision())
             gameOver();
+    }
+
+    /**
+     * Checks the collision between two of the snake's tails
+     * @param i first tail
+     * @param j second tail
+     * @return whether the tails collide
+     */
+    public boolean isSelfCollision(int i, int j) {
+        return (snake.getDrawableUnits().get(i).getPosX() == snake.getDrawableUnits().get(j).getPosX() &&
+                snake.getDrawableUnits().get(i).getPosY() == snake.getDrawableUnits().get(j).getPosY());
     }
 
     /**
@@ -115,8 +142,7 @@ public class Screen {
         if (snake.getDrawableUnits().size() > 1)
             for (int i = 0; i < snake.getDrawableUnits().size(); i++)
                 for (int j = i + 1; j < snake.getDrawableUnits().size() - i; j++)
-                    if (snake.getDrawableUnits().get(i).getPosX() == snake.getDrawableUnits().get(j).getPosX() &&
-                            snake.getDrawableUnits().get(i).getPosY() == snake.getDrawableUnits().get(j).getPosY()) {
+                    if (isSelfCollision(i, j)) {
                         gameOver();
                         break;
                     }

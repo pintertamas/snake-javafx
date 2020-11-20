@@ -2,8 +2,8 @@
  * This class represents an object that extends the Food objects, but also can disappear after some time.
  */
 public class DisappearingFood extends Food {
-    final long spawnTime;
-    final long lifetime;
+    private final long spawnTime;
+    private final long lifetime;
 
     /**
      * When created, sets the spawnTime to the currentTime, and its lifetime to 2 secs.
