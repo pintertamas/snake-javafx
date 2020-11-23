@@ -2,6 +2,9 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Contains some getter and setter tests for the DrawableUnit class
+ */
 class DrawableUnitTest {
     DrawableUnit testDrawableUnit = new DrawableUnit(400, 400);
 

@@ -5,6 +5,9 @@ import static org.junit.jupiter.api.Assertions.*;
 class ScoreComparatorTest {
     Scores scores = new Scores();
 
+    /**
+     * Tests the sorting method if the scores are in correct order
+     */
     @Test
     public void testSortWithoutChange() {
         SingleScore ss1 = new SingleScore(10, "EASY");
@@ -17,6 +20,9 @@ class ScoreComparatorTest {
         assertEquals(scores.getScores().get(0).getDifficulty(), ss2.getDifficulty());
     }
 
+    /**
+     * Tests the sorting method if the scores are not in correct order
+     */
     @Test
     public void testSort() {
         SingleScore ss1 = new SingleScore(20, "EASY");
@@ -29,6 +35,9 @@ class ScoreComparatorTest {
         assertEquals(scores.getScores().get(0).getDifficulty(), ss1.getDifficulty());
     }
 
+    /**
+     * Tests the sorting method if the scores are the same
+     */
     @Test
     public void testLessThan() {
         SingleScore ss2 = new SingleScore(20, "MEDIUM");
