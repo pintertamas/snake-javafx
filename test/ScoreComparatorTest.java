@@ -3,7 +3,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 class ScoreComparatorTest {
-    Scores scores = new Scores();
+    final Scores scores = new Scores();
 
     /**
      * Tests the sorting method if the scores are in correct order

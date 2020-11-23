@@ -7,11 +7,11 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 /**
- * <h1>This is a Snake GUI application.</h1>
+ * This is a Snake GUI application.
  * *
  * * @author Pintér Tamás
  * * @since 2020.11.01
- * * The github repository for this project is here: <a href="#{@link}">{@link "https://github.com/pintertamas/snake-javafx"}</a>
+ * * The github repository for this project is here: https://github.com/pintertamas/snake-javafx
  */
 public class Main extends Application implements GameStatusListener, DifficultyListener {
 

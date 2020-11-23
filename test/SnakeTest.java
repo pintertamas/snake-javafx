@@ -7,9 +7,9 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 class SnakeTest {
-    Scene scene = new Scene(new Group());
-    GraphicsContext gc = new Canvas().getGraphicsContext2D();
-    Snake snake = new Snake(new DrawableUnit(80,120), 800, scene, gc);
+    final Scene scene = new Scene(new Group());
+    final GraphicsContext gc = new Canvas().getGraphicsContext2D();
+    final Snake snake = new Snake(new DrawableUnit(80,120), 800, scene, gc);
 
     /**
      * If we add a new tail to the snake, the size of it must increase by 1

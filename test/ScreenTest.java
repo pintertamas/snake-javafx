@@ -7,9 +7,9 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 class ScreenTest {
-    Scene scene = new Scene(new Group());
-    GraphicsContext gc = new Canvas().getGraphicsContext2D();
-    Screen screen = new Screen(800, scene, gc);
+    final Scene scene = new Scene(new Group());
+    final GraphicsContext gc = new Canvas().getGraphicsContext2D();
+    final Screen screen = new Screen(800, scene, gc);
     Food food1, food2;
 
     /**

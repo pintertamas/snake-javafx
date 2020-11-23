@@ -3,7 +3,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 class ScoresTest {
-    Scores score = new Scores();
+    final Scores score = new Scores();
 
     /**
      * Test case for checking the addScore() method
