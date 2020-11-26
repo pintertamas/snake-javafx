@@ -91,36 +91,30 @@ public class Snake {
      * Moves the snake to the specified direction
      */
     public void moveSnake() {
-
         for (int i = drawableUnits.size() - 1; i > 0; i--) {
             drawableUnits.get(i).setPosX(drawableUnits.get(i - 1).getPosX());
             drawableUnits.get(i).setPosY(drawableUnits.get(i - 1).getPosY());
         }
         switch (direction) {
             case RIGHT -> {
-                if (!(drawableUnits.get(0).getPosX() + 40 < windowSize))
-                    gameOver();
+                if (!(drawableUnits.get(0).getPosX() + 40 < windowSize)) gameOver();
                 else drawableUnits.get(0).setPosX(drawableUnits.get(0).getPosX() + 40);
             }
             case LEFT -> {
-                if (!(drawableUnits.get(0).getPosX() - 40 >= 0))
-                    gameOver();
+                if (!(drawableUnits.get(0).getPosX() - 40 >= 0)) gameOver();
                 else drawableUnits.get(0).setPosX(drawableUnits.get(0).getPosX() - 40);
             }
             case UP -> {
-                if (!(drawableUnits.get(0).getPosY() - 40 >= 0))
-                    gameOver();
+                if (!(drawableUnits.get(0).getPosY() - 40 >= 0)) gameOver();
                 else drawableUnits.get(0).setPosY(drawableUnits.get(0).getPosY() - 40);
 
             }
             case DOWN -> {
-                if (!(drawableUnits.get(0).getPosY() + 40 < windowSize))
-                    gameOver();
+                if (!(drawableUnits.get(0).getPosY() + 40 < windowSize)) gameOver();
                 else drawableUnits.get(0).setPosY(drawableUnits.get(0).getPosY() + 40);
             }
         }
         drawSnake(gc);
-
     }
 
     /**
