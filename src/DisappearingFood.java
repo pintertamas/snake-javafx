@@ -1,3 +1,5 @@
+import java.util.Random;
+
 /**
  * This class represents an object that extends the Food objects, but also can disappear after some time.
  */
@@ -13,7 +15,8 @@ public class DisappearingFood extends Food {
     public DisappearingFood(Screen screen) {
         super(screen);
         this.spawnTime = System.currentTimeMillis();
-        this.lifetime = 2000;
+        Random random = new Random();
+        this.lifetime = random.nextInt(2000)+1000;
     }
 
     /**
