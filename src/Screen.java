@@ -56,7 +56,7 @@ public class Screen {
      * @param difficulty the current difficulty
      * @param gc         the GraphicsContext
      */
-    public void updateScreen(Group root, Canvas canvas, Main.Difficulty difficulty, GraphicsContext gc) throws InterruptedException {
+    public void updateScreen(Group root, Canvas canvas, Main.Difficulty difficulty, GraphicsContext gc) {
         resetScreen(root, canvas);
         drawBackground(gc);
         generateFood(difficulty, gc);
@@ -67,7 +67,11 @@ public class Screen {
         checkFoodCollision();
         checkSelfCollision();
         checkWallCollision();
-        Thread.sleep(100);
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException ex) {
+            ex.printStackTrace();
+        }
     }
 
     /**
