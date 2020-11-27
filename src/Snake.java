@@ -96,23 +96,22 @@ public class Snake {
             drawableUnits.get(i).setPosY(drawableUnits.get(i - 1).getPosY());
         }
         switch (direction) {
-            case RIGHT -> {
+            case RIGHT:
                 if (!(drawableUnits.get(0).getPosX() + 40 < windowSize)) gameOver();
                 else drawableUnits.get(0).setPosX(drawableUnits.get(0).getPosX() + 40);
-            }
-            case LEFT -> {
+                break;
+            case LEFT:
                 if (!(drawableUnits.get(0).getPosX() - 40 >= 0)) gameOver();
                 else drawableUnits.get(0).setPosX(drawableUnits.get(0).getPosX() - 40);
-            }
-            case UP -> {
+                break;
+            case UP:
                 if (!(drawableUnits.get(0).getPosY() - 40 >= 0)) gameOver();
                 else drawableUnits.get(0).setPosY(drawableUnits.get(0).getPosY() - 40);
-
-            }
-            case DOWN -> {
+                break;
+            case DOWN:
                 if (!(drawableUnits.get(0).getPosY() + 40 < windowSize)) gameOver();
                 else drawableUnits.get(0).setPosY(drawableUnits.get(0).getPosY() + 40);
-            }
+                break;
         }
         drawSnake(gc);
     }
