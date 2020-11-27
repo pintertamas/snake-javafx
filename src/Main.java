@@ -91,31 +91,31 @@ public class Main extends Application implements GameStatusListener, DifficultyL
              */
             public void handle(long currTime) {
                 switch (gameStatus) {
-                    case MENU -> {
+                    case MENU:
                         screen.resetScreen(root, canvas);
                         screen.drawBackground(gc);
                         menu.createMenu(root, gameWindowSize, difficulty);
-                    }
-                    case GAME -> {
+                        break;
+                    case GAME:
                         Text score = screen.drawScore(gc);
                         screen.updateScreen(root, canvas, difficulty, gc);
                         root.getChildren().add(score);
-                    }
-                    case NEWGAME -> {
+                        break;
+                    case NEWGAME:
                         screen.setSnake(new Snake(new DrawableUnit(360, 360), gameWindowSize, scene, gc));
                         screen.initFood(difficulty);
                         savedToFile = false;
                         gameStatus = GameStatus.GAME;
-                    }
-                    case LEADERBOARD -> {
+                        break;
+                    case LEADERBOARD:
                         screen.resetScreen(root, canvas);
                         leaderboard.draw(root, gameWindowSize);
-                    }
-                    case GAMEOVER -> {
+                        break;
+                    case GAMEOVER:
                         leaderboard.saveLeaderboard(savedToFile, screen.getSnake().getScore(), difficulty.name());
                         savedToFile = true;
                         gameOver.drawGameOverScreen(root, gameWindowSize);
-                    }
+                        break;
                 }
             }
         }.start();
